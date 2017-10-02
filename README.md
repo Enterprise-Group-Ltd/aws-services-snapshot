@@ -6,13 +6,14 @@ This utility produces snapshots that:
 
 * Answer the question: "What do we have in this AWS account?"
 * Provide disaster recovery data source capability from account or service deletion or other causes
-* Provide data source capability for account or service clone/backup   
+* Provide data source capability for account or service clone/backup  
+* Create an audit trail of AWS service(s) state 
 
 This utility provides service snapshot functionality unavailable in the AWS console or directly via the AWS CLI API. 
 
 This utility can: 
 
-* Capture the current state of all AWS Services in all regions
+* Capture the current state of selected or all AWS Services in a selected or all AWS regions
 * Write the current service state to JSON files   
 
 This utility produces a summary report listing:
