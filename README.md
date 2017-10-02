@@ -52,7 +52,7 @@ This utility produces a summary report listing:
 * [AWS CLI](https://aws.amazon.com/cli/) - command line utilities (pre-installed on AWS AMIs) 
 * File 'aws-services-snapshot-driver.txt' or custom driver file containing AWS describe/list commands 
 * File 'aws-services-snapshot-driver-global.txt' containing AWS global services (services that are not limited to an AWS region, e.g. IAM, S3, cloudfront, etc.) 
-* AWS CLI profile with IAM permissions for the AWS CLI command:
+* AWS CLI profile with IAM permissions for the AWS CLI commands:
   * aws ec2 describe-instances (used to test for valid -r region )
   * aws sts get-caller-identity (used to pull account number )
   * aws iam list-account-aliases (used to pull account alias )
@@ -102,8 +102,10 @@ This project is licensed under the MIT License - see the [LICENSE.md](https://gi
 
 ## Acknowledgments
 
+* [Key jq answers by jq170727](https://stackoverflow.com/users/8379597/jq170727) 
 * [Progress bar](https://stackoverflow.com/questions/238073/how-to-add-a-progress-bar-to-a-shell-script)  
 * [Dynamic headers fprint](https://stackoverflow.com/questions/5799303/print-a-character-repeatedly-in-bash)
 * [Menu](https://stackoverflow.com/questions/30182086/how-to-use-goto-statement-in-shell-script)
+* [Remove duplicate lines and retain line order](https://unix.stackexchange.com/questions/30173/how-to-remove-duplicate-lines-inside-a-text-file)
 * Countless other jq and bash/shell man pages, Q&A, posts, examples, tutorials, etc. from various sources  
 
