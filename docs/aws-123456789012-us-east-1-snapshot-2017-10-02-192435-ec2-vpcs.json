@@ -1,0 +1,93 @@
+{
+  "account": "123456789012",
+  "regions": [
+    {
+      "regionName": "us-east-1",
+      "regionServices": [
+        {
+          "serviceType": "ec2",
+          "service": [
+            {
+              "ec2___vpcs": [
+                {
+                  "Vpcs": [
+                    {
+                      "VpcId": "vpc-12345678",
+                      "InstanceTenancy": "default",
+                      "Tags": [
+                        {
+                          "Value": "arn:aws:cloudformation:us-east-1:123456789012:stack/vpc-base/12345678-abcd-1234-1234-1234567890ab",
+                          "Key": "aws:cloudformation:stack-id"
+                        },
+                        {
+                          "Value": "vpc-base",
+                          "Key": "aws:cloudformation:stack-name"
+                        },
+                        {
+                          "Value": "production",
+                          "Key": "Name"
+                        },
+                        {
+                          "Value": "vpcProduction",
+                          "Key": "aws:cloudformation:logical-id"
+                        }
+                      ],
+                      "CidrBlockAssociationSet": [
+                        {
+                          "AssociationId": "vpc-cidr-assoc-abc12345",
+                          "CidrBlock": "10.0.0.0/16",
+                          "CidrBlockState": {
+                            "State": "associated"
+                          }
+                        }
+                      ],
+                      "State": "available",
+                      "DhcpOptionsId": "dopt-12345678",
+                      "CidrBlock": "10.0.0.0/16",
+                      "IsDefault": false
+                    },
+                    {
+                      "VpcId": "vpc-12345678",
+                      "InstanceTenancy": "default",
+                      "Tags": [
+                        {
+                          "Value": "vpcDev02",
+                          "Key": "aws:cloudformation:logical-id"
+                        },
+                        {
+                          "Value": "dev_02",
+                          "Key": "Name"
+                        },
+                        {
+                          "Value": "arn:aws:cloudformation:us-east-1:123456789012:stack/vpc-base/12345678-abcd-1234-1234-1234567890ab",
+                          "Key": "aws:cloudformation:stack-id"
+                        },
+                        {
+                          "Value": "vpc-base",
+                          "Key": "aws:cloudformation:stack-name"
+                        }
+                      ],
+                      "CidrBlockAssociationSet": [
+                        {
+                          "AssociationId": "vpc-cidr-assoc-12345678",
+                          "CidrBlock": "10.80.0.0/16",
+                          "CidrBlockState": {
+                            "State": "associated"
+                          }
+                        }
+                      ],
+                      "State": "available",
+                      "DhcpOptionsId": "dopt-71352313",
+                      "CidrBlock": "10.80.0.0/16",
+                      "IsDefault": false
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

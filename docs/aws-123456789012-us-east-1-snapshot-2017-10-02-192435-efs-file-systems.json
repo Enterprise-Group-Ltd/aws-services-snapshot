@@ -1,0 +1,39 @@
+{
+  "account": "123456789012",
+  "regions": [
+    {
+      "regionName": "us-east-1",
+      "regionServices": [
+        {
+          "serviceType": "efs",
+          "service": [
+            {
+              "efs___file_systems": [
+                {
+                  "FileSystems": [
+                    {
+                      "SizeInBytes": {
+                        "Timestamp": 1506967199,
+                        "Value": 6144
+                      },
+                      "Name": "telematics intermediate files",
+                      "CreationToken": "console-12345678-1234-1234-1234-123456789012",
+                      "Encrypted": true,
+                      "CreationTime": 1506001254,
+                      "PerformanceMode": "generalPurpose",
+                      "FileSystemId": "fs-12345678",
+                      "NumberOfMountTargets": 2,
+                      "LifeCycleState": "available",
+                      "KmsKeyId": "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012",
+                      "OwnerId": "123456789012"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
