@@ -1,42 +1,41 @@
 
----------------------------------------- AWS Service Snapshot Utility usage -----------------------------------------"
+---------------------------------------- AWS Service Snapshot Utility usage -----------------------------------------
 
-This utility snapshots the current state of AWS Services  "  
+This utility snapshots the current state of AWS Services    
 
-This script will: "
-* Capture the current state of AWS Services "
-* Write the current state to JSON files  "
+This script will: 
+* Capture the current state of AWS Services 
+* Write the current state to JSON files  
 
----------------------------------------------------------------------------------------------------------------------"
+---------------------------------------------------------------------------------------------------------------------
 
-Usage:"
-        aws-services-snapshot.sh -p AWS_CLI_profile "
+Usage:
+        aws-services-snapshot.sh -p AWS_CLI_profile 
 
-        Optional parameters: -d MyDriverFile -r AWS_region -b y -g y "
+        Optional parameters: -d MyDriverFile -r AWS_region -b y -g y 
 
-Where: "
- -p - Name of the AWS CLI cli_profile (i.e. what you would pass to the --profile parameter in an AWS CLI command)"
-        Example: -p myAWSCLIprofile "
+Where: 
+ -p - Name of the AWS CLI cli_profile (i.e. what you would pass to the --profile parameter in an AWS CLI command)
+        Example: -p myAWSCLIprofile 
     
- -d - Driver file name. If no name is provided, the utility defaults to: aws-services-snapshot-driver.txt "
-        Example: -d aws-services-snapshot-driver-prod.txt "
+ -d - Driver file name. If no name is provided, the utility defaults to: aws-services-snapshot-driver.txt 
+        Example: -d aws-services-snapshot-driver-prod.txt 
     
- -r - AWS region to snapshot. Default is the AWS CLI profile's region. Enter 'all' for all regions. "
-      A list of available AWS regions is here: "
-      http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions"
-        Example: -r us-east-2 "
-        Example: -r all "
+ -r - AWS region to snapshot. Default is the AWS CLI profile's region. Enter 'all' for all regions. 
+      A list of available AWS regions is here: 
+      http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions
+        Example: -r us-east-2 
+        Example: -r all 
         
- -b - Verbose console output. Set to 'y' for verbose console output. Temp files are not deleted. "
-        Example: -b y "
+ -b - Verbose console output. Set to 'y' for verbose console output. Temp files are not deleted. 
+        Example: -b y 
 
- -g - Logging on / off. Default is off. Set to 'y' to create an info log. Set to 'z' to create a debug log. "
-      Note: logging mode is slower and debug log mode will be very slow and resource intensive on large jobs. "
-        Example: -g y "
+ -g - Logging on / off. Default is off. Set to 'y' to create an info log. Set to 'z' to create a debug log. 
+      Note: logging mode is slower and debug log mode will be very slow and resource intensive on large jobs. 
+        Example: -g y 
 
- -h - Display this message"
-        Example: -h "
+ -h - Display this message
+        Example: -h 
 
- ---version - Display the script version"
-        Example: --version "
-
+ ---version - Display the script version
+        Example: --version 
