@@ -102,7 +102,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](https://gi
 
 ## Acknowledgments
 
-* [Key jq answers by jq170727](https://stackoverflow.com/users/8379597/jq170727) 
+* Key jq answers by [jq170727](https://stackoverflow.com/users/8379597/jq170727) 
 * [Progress bar](https://stackoverflow.com/questions/238073/how-to-add-a-progress-bar-to-a-shell-script)  
 * [Dynamic headers fprint](https://stackoverflow.com/questions/5799303/print-a-character-repeatedly-in-bash)
 * [Menu](https://stackoverflow.com/questions/30182086/how-to-use-goto-statement-in-shell-script)
