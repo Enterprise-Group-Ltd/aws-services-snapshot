@@ -42,7 +42,7 @@ This utility produces a summary report listing:
     * The bash shell is included in most distributions and is pre-installed on AWS EC2 Linux instances
 5. Install [jq](https://github.com/stedolan/jq) 
     * To install jq on AWS EC2: `$ sudo yum install jq -y`
-6. Download this utility script or create a local copy and run it on the local or EC2 linux instance
+6. Download this utility script or create a local copy and run it on the local or EC2 Linux instance
     * Example: `$ bash ./aws-services-snapshot.sh -p AWS_CLI_profile -d MyDriverFile -r AWS_region`  
 
 ## [Prerequisites](#prerequisites)
@@ -86,7 +86,7 @@ To directly execute the utility:
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](https://github.com/Enterprise-Group-Ltd/aws-services-snapshot/blob/master/CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests to us.
+Please read [CONTRIBUTING.md](https://github.com/Enterprise-Group-Ltd/aws-services-snapshot/blob/master/CONTRIBUTING.md) for the process for submitting pull requests to us.
 
 ## Versioning
 
