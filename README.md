@@ -1,4 +1,4 @@
-# EGL AWS Snapshot Services AMI Utility
+# EGL AWS Snapshot Services Utility
 
 This shell script snapshots the current state of AWS resources and writes it to JSON files
 
