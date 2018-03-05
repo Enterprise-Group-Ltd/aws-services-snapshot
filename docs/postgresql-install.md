@@ -433,6 +433,19 @@ Alternatively, create the file on the instance using nano:
 2. Execute this command:
 `bash ./aws-services-snapshot.sh -r myRegion -p myAwsCliProfile`
 
+## Utility output
+The utility creates a unique directory on the EC2 instance and a unique schema on the PostgreSQL database for each run. 
+
+The unique EC2 directories contain:
+* Summary report
+* Error report (if any)
+* Log (if set with -g parameter)
+* subdirectory `snapshot-files` containing the JSON results files for each AWS CLI command executed 
+
+The unique PostreSQL schemas contain:
+* AWS services and AWS CLI commands tables used in that run
+* JSON results tables for each AWS CLI command executed 
+
 
 ## Selecting which AWS services and AWS CLI commands to snapshot
 To select which AWS services and AWS CLI commands to snapshot, edit the Excel workbook `driver_aws_cli_commands-X-X-X.xlsx` and copy the contents of the tabs into the database tables in schema: `aws_sps__commands`  
