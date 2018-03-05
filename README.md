@@ -71,7 +71,7 @@ The unique PostreSQL schema contains:
 * [jq](https://github.com/stedolan/jq) - JSON wrangler
 * [AWS CLI](https://aws.amazon.com/cli/) - command line utilities (pre-installed on AWS AMIs) 
 * [PostgreSQL](https://www.postgresql.org/) - database with JSON capabilities
-* [Microsoft Excel](https://products.office.com/en-us/excel) file: `driver_aws_cli_commands-X-X-X.xlsx` (this file is used to create the contents of the postgresql tables `_driver_aws_cli_commands` and `_driver_aws_cli_commands_recursive` ) 
+* [Microsoft Excel](https://products.office.com/en-us/excel) file: `driver_aws_cli_commands-X-X-X.xlsx` (this file is used to create the contents of the postgresql tables `_driver_aws_services`, `_driver_aws_cli_commands` and `_driver_aws_cli_commands_recursive` ) 
 * AWS CLI profile with IAM permissions for the AWS CLI commands:
   * aws ec2 describe-instances (used to test for valid -r region )
   * aws sts get-caller-identity (used to pull account number )
