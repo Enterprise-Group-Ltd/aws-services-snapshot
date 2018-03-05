@@ -363,11 +363,81 @@ Copy the contents of the Excel workbook `driver_aws_cli_commands-X-X-X.xlsx` tab
 
 Copy the contents of the Excel workbook `driver_aws_cli_commands-X-X-X.xlsx` tab `aws_services` into the empty postgresql table `aws_snapshot.aws_sps__commands._driver_aws_services` and commit the transactions
 
+## Create AWS CLI profile(s)
+
+Create AWS CLI profiles with required AWS IAM permissions for each AWS account that you want to snapshot
+
+1. Create AWS IAM user IDs in each AWS account you wish to snapshot
+2. Attach the required IAM policies to the IAM user
+
+Sample IAM policy JSON for "sts:GetCallerIdentity"
+```json
+     {
+       "Version": "2012-10-17",
+       "Statement": 
+           {
+           "Effect": "Allow",
+           "Action": "sts:GetCallerIdentity",
+           "Resource": "*"
+           }
+       }
+```
+
+Sample IAM policy JSON for "iam:ListAccountAliases"
+```json
+       {
+       "Version": "2012-10-17",
+       "Statement": 
+           {
+           "Effect": "Allow",
+           "Action": "iam:ListAccountAliases",
+           "Resource": "*"
+           }
+       }
+```
+
+3. Open an SSH session on the EC2 instance
+4. Execute this command:
+`aws configure --profile profileName`
+
+Example:
+`aws configure --profile MyProfileName`
+
+5. Enter the keys for the AWS account userID for the profile
+6. If desired, enter a default region, e.g. us-west-1
+
+
+
+## Copy the AWS Services Snapshot utility to the EC2 instance
+
+Using an FTP client, copy the AWS Services Snapshot utility file to the AWS EC2 instance
+File: `aws-services-snapshot.sh`
+
+Alternatively, create the file on the instance using nano:
+1. Open the [AWS Services Snapshot utility](https://raw.githubusercontent.com/Enterprise-Group-Ltd/aws-services-snapshot/master/aws-services-snapshot.sh)
+2. select all 
+3. Open an SSH session on the EC2 instance as ec2-user
+4. Execute this command:
+`nano aws-services-snapshot.sh`
+5. paste
+6. CTRL O
+7. CTRL X
+
+
 ## Setup is now complete
+
+---
+
+## Running the utility
+1. Open an SSH session on the EC2 instance as ec2-user
+2. Execute this command:
+`bash ./aws-services-snapshot.sh -r myRegion -p myAwsCliProfile`
+
 
 ## Selecting which AWS services and AWS CLI commands to snapshot
 To select which AWS services and AWS CLI commands to snapshot, edit the Excel workbook `driver_aws_cli_commands-X-X-X.xlsx` and copy the contents of the tabs into the database tables in schema: `aws_sps__commands`  
 
+---
 
 ## Misc:
 
