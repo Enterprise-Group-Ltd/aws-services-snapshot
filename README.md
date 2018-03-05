@@ -32,6 +32,18 @@ This utility produces a summary report listing:
 * List of regions snapshotted
 * List of services snapshotted
 
+This utility creates a unique directory on the EC2 instance and a unique schema on the PostgreSQL database for each run. 
+
+The unique EC2 directory contains:
+* Summary report
+* Error report (if any)
+* Log (if set with -g parameter)
+* subdirectory `snapshot-files` containing the JSON results files for each AWS CLI command executed 
+
+The unique PostreSQL schema contains:
+* AWS services and AWS CLI commands tables used in that run
+* JSON results tables for each AWS CLI command executed 
+
 
 ## Getting Started
 
