@@ -436,13 +436,13 @@ Alternatively, create the file on the instance using nano:
 ## Utility output
 The utility creates a unique directory on the EC2 instance and a unique schema on the PostgreSQL database for each run. 
 
-The unique EC2 directories contain:
+The unique EC2 directory contains:
 * Summary report
 * Error report (if any)
 * Log (if set with -g parameter)
 * subdirectory `snapshot-files` containing the JSON results files for each AWS CLI command executed 
 
-The unique PostreSQL schemas contain:
+The unique PostreSQL schema contains:
 * AWS services and AWS CLI commands tables used in that run
 * JSON results tables for each AWS CLI command executed 
 
