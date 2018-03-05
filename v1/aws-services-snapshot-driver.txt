@@ -1,0 +1,148 @@
+#  
+# 
+# >> Do not change the name or format of this file or the snapshot utility will not work properly << 
+#
+# 
+# File: aws-services-snapshot-driver.txt
+#
+# version: 1.0.10   
+#
+#
+# This file is used with the 'aws-services-snapshot.sh' utility.
+# This file lists all of the AWS CLI commands required to snapshot the state of an AWS account.
+#
+# To add a service and its resources to the list, enter the AWS CLI service and the 
+# describe/list command# required in the format: service describe/list-command
+#
+# Example: auto-scaling describe-auto-scaling-groups  
+#
+# Where:  
+#   service = auto-scaling  
+#   describe/list-command = describe-auto-scaling-groups  
+#
+# For recursive commands that require a qualifier, such as a user name, prefix the AWS service 
+# with an @ character.   
+#
+# >> Recursive commands must immediately follow the describe/list command that produces the   
+# required qualifier <<      
+#
+# Example:  
+#  iam list-users  
+#  @iam list-user-policies --user-name UserName  
+#  @iam list-groups-for-user --user-name UserName  
+#
+# Recursive commands must also include the required qualifier and the related JSON key.    
+#
+# The related JSON key can be found in the qualifier answer set, such as in the file  
+# "...iam-users.json" for a recursive command that requires the user name.  
+#
+# The resulting format is: service describe/list-command qualifier key  
+# Example: @iam list-groups-for-user --user-name UserName  
+# 
+# Where:  
+#   service = @iam  
+#   describe/list-command = list-groups-for-user  
+#   qualifier = --user-name  
+#   key = UserName  
+#
+# You can find the service, describe/list command, and qualifier in the AWS CLI documentation here: 
+# http://docs.aws.amazon.com/cli/latest/reference/  
+# 
+# To disable snapshotting a service, put a # character in the first position of the line.  
+# Example: # ec2 describe-security-groups  
+#
+# To create a comment or a divider, put a # character in the first position of the line.  
+# Example: # This is a comment
+# 
+# 
+# The following AWS services will be snapshotted if enabled  
+# (prefix with # to disable):  
+# ----------------------------------------------------------------------  
+#
+###############################################################################
+#
+autoscaling describe-policies
+autoscaling describe-auto-scaling-groups
+autoscaling describe-launch-configurations
+#
+###############################################################################
+#
+cloudwatch describe-alarms
+#
+###############################################################################
+#
+ec2 describe-instances
+ec2 describe-internet-gateways
+ec2 describe-key-pairs
+ec2 describe-nat-gateways
+ec2 describe-network-acls
+ec2 describe-reserved-instances
+ec2 describe-route-tables
+ec2 describe-security-groups
+ec2 describe-subnets
+ec2 describe-vpc-endpoints
+ec2 describe-vpcs
+#
+###############################################################################
+#
+efs describe-file-systems
+@efs describe-mount-targets --file-system-id FileSystemId
+#
+###############################################################################
+#
+iam list-groups
+@iam list-group-policies --group-name GroupName
+iam list-policies
+iam list-roles
+@iam list-role-policies --role-name RoleName
+iam list-users
+@iam list-user-policies --user-name UserName
+@iam list-groups-for-user --user-name UserName
+#
+###############################################################################
+#
+rds describe-db-instances
+rds describe-db-parameter-groups
+rds describe-db-security-groups
+rds describe-reserved-db-instances
+#
+###############################################################################
+#
+redshift describe-cluster-parameter-groups
+redshift describe-clusters
+redshift describe-reserved-nodes
+#
+###############################################################################
+#
+route53 list-hosted-zones
+@route53 list-resource-record-sets --hosted-zone-id Id
+route53 list-hosted-zones-by-name
+#
+###############################################################################
+#
+s3api list-buckets
+@s3api get-bucket-acl --bucket Name
+@s3api get-bucket-cors --bucket Name
+@s3api get-bucket-lifecycle --bucket Name
+@s3api get-bucket-lifecycle-configuration --bucket Name
+@s3api get-bucket-logging --bucket Name
+@s3api get-bucket-notification --bucket Name
+@s3api get-bucket-notification-configuration --bucket Name
+@s3api get-bucket-policy --bucket Name
+@s3api get-bucket-replication --bucket Name
+@s3api get-bucket-tagging --bucket Name
+@s3api get-bucket-versioning --bucket Name
+#
+###############################################################################
+#
+sns list-subscriptions
+sns list-topics
+@sns get-topic-attributes --topic-arn TopicArn
+#
+###############################################################################
+#
+sqs list-queues
+@sqs get-queue-attributes --queue-url QueueUrls
+#
+###############################################################################
+#
