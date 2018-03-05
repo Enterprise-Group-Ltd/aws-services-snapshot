@@ -61,8 +61,8 @@ The unique PostreSQL schema contains:
     * To install jq on AWS EC2: `$ sudo yum install jq -y`
 6. Download this utility script or create a local copy and run it on the local or EC2 Linux instance
     * Example: `$ bash ./aws-services-snapshot.sh -p AWS_CLI_profile -r AWS_region`  
-7. Selecting which AWS services and AWS CLI commands to snapshot
-  * To select which AWS services and AWS CLI commands to snapshot, edit the Excel workbook `driver_aws_cli_commands-X-X-X.xlsx` and copy the contents of the XL workbook tabs into the corresponding database tables in schema: `aws_sps__commands`  
+
+  * Note: To select which AWS services and AWS CLI commands to snapshot, edit the Excel workbook `driver_aws_cli_commands-X-X-X.xlsx` and copy the contents of the XL workbook tabs into the corresponding database tables in schema: `aws_sps__commands`  
 
 
 ## [Prerequisites](#prerequisites)
