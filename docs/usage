@@ -12,7 +12,7 @@ This script will:
 Usage:
         aws-services-snapshot.sh -p AWS_CLI_profile 
 
-        Optional parameters: -d MyDriverFile -r AWS_region -b y -g y -x y
+        Optional parameters: -d MyDriverFile -r AWS_region -g y -x y
 
 Where: 
  -p - Name of the AWS CLI cli_profile (i.e. what you would pass to the --profile parameter in an AWS CLI command)
