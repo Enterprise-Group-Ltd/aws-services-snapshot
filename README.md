@@ -128,5 +128,6 @@ This project is licensed under the MIT License - see the [LICENSE.md](https://gi
 * [Dynamic headers fprint](https://stackoverflow.com/questions/5799303/print-a-character-repeatedly-in-bash)
 * [Menu](https://stackoverflow.com/questions/30182086/how-to-use-goto-statement-in-shell-script)
 * [Remove duplicate lines and retain line order](https://unix.stackexchange.com/questions/30173/how-to-remove-duplicate-lines-inside-a-text-file)
+* [Setup PostreSQL 9.X on Amazon Linux](http://imperialwicket.com/aws-install-postgresql-90-on-amazon-linux/) 
 * Countless other jq and bash/shell man pages, Q&A, posts, examples, tutorials, etc. from various sources  
 
