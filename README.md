@@ -1,4 +1,4 @@
-# EGL AWS Snapshot Services Utility
+# EGL AWS Services Snapshot Utility
 
   * Note: For a quick and simple snapshot, use version 1 located here: https://github.com/Enterprise-Group-Ltd/aws-services-snapshot/tree/master/v1  
           Version 1 is quick and easy while version 2 requires a PostgreSQL database and significant setup.   
