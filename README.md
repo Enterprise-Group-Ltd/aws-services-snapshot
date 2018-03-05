@@ -1,6 +1,9 @@
 # EGL AWS Snapshot Services Utility
 
-This shell script snapshots the current state of AWS resources and writes it to JSON files
+  * Note: For a quick and simple snapshot, use version 1 located here: https://github.com/Enterprise-Group-Ltd/aws-services-snapshot/tree/master/v1  
+          Version 1 is quick and easy while version 2 requires a PostgreSQL database and significant setup.   
+
+This shell script snapshots the current state of AWS resources and writes it to JSON files and PostreSQL tables
 
 This utility produces snapshots that:
 
@@ -14,7 +17,9 @@ This utility provides service snapshot functionality unavailable in the AWS cons
 This utility can: 
 
 * Capture the current state of selected or all AWS Services in a selected or all AWS regions
-* Write the current service state to JSON files   
+* Write the current service state to JSON files 
+* Write the current service state to PostgreSQL tables
+* Be scheduled 
 
 This utility produces a summary report listing:
 
@@ -30,12 +35,12 @@ This utility produces a summary report listing:
 
 ## Getting Started
 
-1. Instantiate a local or EC2 Linux instance
+1. Follow the [PostgreSQL installation instructions](https://github.com/Enterprise-Group-Ltd/aws-services-snapshot/blob/master/docs/postgresql-install.md) 
 2. Install or update the AWS CLI utilities
     * The AWS CLI utilities are pre-installed on AWS EC2 Linux instances
     * To update on an AWS EC2 instance: `$ sudo pip install --upgrade awscli` 
 3. Create an AWS CLI named profile that includes the required IAM permissions 
-    * See the "[Prerequisites](#prerequisites)" section for the required IAM permissions
+    * See the "[Prerequisites](#prerequisites)" section of the bash shell script for the required IAM permissions
     * To create an AWS CLI named profile: `$ aws configure --profile MyProfileName`
     * AWS CLI named profile documentation is here: [Named Profiles](http://docs.aws.amazon.com/cli/latest/userguide/cli-multiple-profiles.html)
 4. Install the [bash](https://www.gnu.org/software/bash/) shell
@@ -43,7 +48,7 @@ This utility produces a summary report listing:
 5. Install [jq](https://github.com/stedolan/jq) 
     * To install jq on AWS EC2: `$ sudo yum install jq -y`
 6. Download this utility script or create a local copy and run it on the local or EC2 Linux instance
-    * Example: `$ bash ./aws-services-snapshot.sh -p AWS_CLI_profile -d MyDriverFile -r AWS_region`  
+    * Example: `$ bash ./aws-services-snapshot.sh -p AWS_CLI_profile -r AWS_region`  
 
 ## [Prerequisites](#prerequisites)
 
@@ -77,6 +82,7 @@ To directly execute the utility:
 * JSON 'all regions - all services' file
 * JSON 'all services' file for each region
 * JSON snapshot files for each service
+* PostgreSQL tables for each AWS CLI service command
 * Info log (execute with the `-g y` parameter)  
   * Example: `$ bash ./aws-services-snapshot.sh -p AWS_CLI_profile -d MyDriverFile -r AWS_region -g y`  
 * Debug log (execute with the `-g z` parameter)  
