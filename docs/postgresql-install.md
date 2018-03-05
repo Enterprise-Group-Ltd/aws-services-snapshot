@@ -3,7 +3,7 @@
 These instructions are an update of this post: http://imperialwicket.com/aws-install-postgresql-90-on-amazon-linux/
 
 
-## Install PostgreSQL 9.6 on AWS Linux
+## Create and configure the AWS Services Snapshot utility EC2 instance
 
 The high level steps are:
 
