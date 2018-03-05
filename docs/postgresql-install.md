@@ -351,6 +351,13 @@ Save and exit the file:
 [esc]:wq
 ```
 
+## Create the AWS services and AWS CLI commands tables
+
+Using a local client or psql, connect as PostgreSQL role `ec2-user`
+
+Execute the SQL script: [setup-aws-snapshot-db.sql](https://github.com/Enterprise-Group-Ltd/aws-services-snapshot/blob/master/setup-aws-snapshot-db.sql) 
+
+
 
 ## Misc:
 
