@@ -410,10 +410,10 @@ Example:
 
 ## Copy the AWS Services Snapshot utility to the EC2 instance
 
-Using an FTP client, copy the AWS Services Snapshot utility file to the AWS EC2 instance
+Using an FTP client, copy the AWS Services Snapshot utility file to the AWS EC2 instance  
 File: `aws-services-snapshot.sh`
 
-Alternatively, create the file on the instance using nano:
+Alternatively, create the file on the instance using nano:  
 1. Open the [AWS Services Snapshot utility](https://raw.githubusercontent.com/Enterprise-Group-Ltd/aws-services-snapshot/master/aws-services-snapshot.sh)
 2. select all 
 3. Open an SSH session on the EC2 instance as ec2-user
