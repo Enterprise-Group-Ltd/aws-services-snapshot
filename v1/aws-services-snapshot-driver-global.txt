@@ -1,0 +1,54 @@
+#  
+# 
+# >> Do not change the name or format of this file or the snapshot utility will not work properly << 
+#
+# 
+# File: aws-services-snapshot-driver-global.txt
+#
+# version: 1.0.1   
+#
+#
+# This file is used with the 'aws-services-snapshot.sh' utility.
+# This file lists all of the global AWS CLI commands that are not tied to an AWS region.
+#
+# To add a service and its resources to the list, enter the AWS CLI service and the 
+# describe/list command# required in the format: service
+#
+# Example: iam   
+#
+# Where:  
+#   service = iam  
+#
+# 
+# To disable snapshotting a service, put a # character in the first position of the line.  
+# Example: # s3api  
+#
+# To create a comment or a divider, put a # character in the first position of the line.  
+# Example: # This is a comment
+# 
+# 
+# The following global AWS services will be snapshotted if enabled  
+# (prefix with # to disable):  
+# ----------------------------------------------------------------------  
+#
+###############################################################################
+#
+iam 
+#
+###############################################################################
+#
+s3api 
+# s3
+#
+###############################################################################
+#
+cloudfront
+#
+###############################################################################
+#
+# search for 'single endpoint' here: http://docs.aws.amazon.com/general/latest/gr/rande.html#cf_region 
+# 
+# shield advanced
+# waf for cloudfront 
+#
+#
