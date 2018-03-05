@@ -49,19 +49,22 @@ This utility produces a summary report listing:
     * To install jq on AWS EC2: `$ sudo yum install jq -y`
 6. Download this utility script or create a local copy and run it on the local or EC2 Linux instance
     * Example: `$ bash ./aws-services-snapshot.sh -p AWS_CLI_profile -r AWS_region`  
+7. Selecting which AWS services and AWS CLI commands to snapshot
+  * To select which AWS services and AWS CLI commands to snapshot, edit the Excel workbook `driver_aws_cli_commands-X-X-X.xlsx` and copy the contents of the XL workbook tabs into the corresponding database tables in schema: `aws_sps__commands`  
+
 
 ## [Prerequisites](#prerequisites)
 
 * [bash](https://www.gnu.org/software/bash/) - Linux shell 
 * [jq](https://github.com/stedolan/jq) - JSON wrangler
 * [AWS CLI](https://aws.amazon.com/cli/) - command line utilities (pre-installed on AWS AMIs) 
-* File 'aws-services-snapshot-driver.txt' or custom driver file containing AWS describe/list commands 
-* File 'aws-services-snapshot-driver-global.txt' containing AWS global services (services that are not limited to an AWS region, e.g. IAM, S3, cloudfront, etc.) 
+* [PostgreSQL](https://www.postgresql.org/) - database with JSON capabilities
+* [Microsoft Excel](https://products.office.com/en-us/excel) file: `driver_aws_cli_commands-X-X-X.xlsx` (this file is used to create the contents of the postgresql tables `_driver_aws_cli_commands` and `_driver_aws_cli_commands_recursive` ) 
 * AWS CLI profile with IAM permissions for the AWS CLI commands:
   * aws ec2 describe-instances (used to test for valid -r region )
   * aws sts get-caller-identity (used to pull account number )
   * aws iam list-account-aliases (used to pull account alias )
-* AWS CLI profile with IAM permissions for the AWS CLI 'service describe' and 'service list' commands included in the aws-snapshot-services-driver.txt file or custom driver file 
+* AWS CLI profile with IAM permissions for the AWS CLI 'service describe', 'service list', and 'service get' commands included in the postgresql tables `_driver_aws_cli_commands` and `_driver_aws_cli_commands_recursive` 
 
 
 ## Deployment
