@@ -2,7 +2,7 @@
 
 SQL setup script for AWS Services Snapshot utility
 
-v0.0.5
+v0.0.6
 
 This script sets up the PostgreSQL database 'aws_snapshot' for use by the 
 AWS Services Snapshot utility
@@ -48,10 +48,10 @@ CREATE SCHEMA IF NOT EXISTS aws_sps__commands
 
 /* create driver_aws_services table */
 
-DROP TABLE IF EXISTS aws_sps__commands.driver_aws_services
+DROP TABLE IF EXISTS aws_sps__commands._driver_aws_services
 ;
 
-CREATE TABLE aws_sps__commands.driver_aws_services(
+CREATE TABLE aws_sps__commands._driver_aws_services(
   id SERIAL PRIMARY KEY
 , aws_service TEXT NOT NULL 
 , execute_yn TEXT NOT NULL
@@ -66,10 +66,10 @@ CREATE TABLE aws_sps__commands.driver_aws_services(
 
 /* create driver_aws_cli_commands table */
 
-DROP TABLE IF EXISTS aws_sps__commands.driver_aws_cli_commands
+DROP TABLE IF EXISTS aws_sps__commands._driver_aws_cli_commands
 ;
 
-CREATE TABLE aws_sps__commands.driver_aws_cli_commands(
+CREATE TABLE aws_sps__commands._driver_aws_cli_commands(
   id SERIAL PRIMARY KEY
 , aws_service TEXT NOT NULL 
 , aws_cli_command TEXT NOT NULL 
@@ -84,10 +84,10 @@ CREATE TABLE aws_sps__commands.driver_aws_cli_commands(
 
 /* create driver_aws_cli_commands_recursive table */
 
-DROP TABLE IF EXISTS aws_sps__commands.driver_aws_cli_commands_recursive
+DROP TABLE IF EXISTS aws_sps__commands._driver_aws_cli_commands_recursive
 ;
 
-CREATE TABLE aws_sps__commands.driver_aws_cli_commands_recursive(
+CREATE TABLE aws_sps__commands._driver_aws_cli_commands_recursive(
    key_id SERIAL PRIMARY KEY
 ,  aws_service TEXT NOT NULL
 ,  aws_cli_command TEXT NOT NULL
