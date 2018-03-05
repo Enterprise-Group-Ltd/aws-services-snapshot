@@ -1,6 +1,33 @@
 #! /bin/bash
 #
 #
+##########################################
+# 
+# begin bash shell script 
+#
+##########################################
+#
+###############################################################################
+#  
+# >>>> begin documentation <<<< 
+#
+###############################################################################
+#
+#
+##########################################################################################################
+#
+# Structure: 
+# A) documentation (this section)
+# B) initialize (initializes variables and tables)
+# C) functionDefinition (defines functions)
+# D) setup (loads files, tables, and variables )
+# E) main (creates program output) 
+#
+# For quick access, search for 'begin' or 'end' and the section name 
+# Example: 'begin setup'  
+#
+##########################################################################################################
+#
 # ------------------------------------------------------------------------------------
 #
 # MIT License
@@ -28,8 +55,9 @@
 # ------------------------------------------------------------------------------------
 # 
 # File: aws-services-snapshot.sh
+# Source: https://github.com/Enterprise-Group-Ltd/aws-services-snapshot
 #
-script_version=2.0.37  
+script_version=2.0.38  
 #
 #  Dependencies:
 #  - postgresql instance running on EC2; setup instructions here:
@@ -96,47 +124,51 @@ script_version=2.0.37
 # 
 # Type: AWS utility
 # Description: 
-#   This shell script snapshots the current state of AWS resources and writes it to JSON files
+#   This shell script snapshots the current state of AWS resources and writes it to JSON files and PostgreSQL tables
 #
 #
 # Roadmap:
 # - DB error check exists, populated
 # - multi-recursive
 # - dependent-recursive
+# - hardcoded parameter value
 # - auto-support --account-id qualifier
-# - driver line parameter "$" suffix to tag services with fixed/regular costs, e.g. load balancers  
+# - service attribute "$" to tag services with fixed/regular costs, e.g. load balancers  
 # 
 #
 ##########################################################################################################
 #
 # Overview: 
-# This utility executes a series of AWS CLI, jq, and psql commands that create local JSON files and 
+# This utility executes a series of shell, AWS CLI, jq, and psql commands that create local JSON files and 
 # postgresql JSON tables populated with snapshots of AWS services.
 # 
 # The process to execute the utility is: 
-# 1) create an EC2 instance 
+# 1) create an EC2 instance (setup steps here: https://github.com/Enterprise-Group-Ltd/aws-services-snapshot/blob/master/docs/postgresql-install.md )
 # 2) install postgresql 9.6 (setup steps here: https://github.com/Enterprise-Group-Ltd/aws-services-snapshot/blob/master/docs/postgresql-install.md )
-# 3) populate the Microsoft Excel file: 'driver_aws_cli_commands-X-X-X.xlsx'
-# 4) copy the contents of the Excel workbook 'driver_aws_cli_commands-X-X-X.xlsx' tab 'commands' into the empty postgresql table 'aws_snapshot.aws_sps__commands._driver_aws_cli_commands' and commit the transactions
-# 5) copy the contents of the Excel workbook 'driver_aws_cli_commands-X-X-X.xlsx' tab 'commands_recursive' into the empty postgresql table 'aws_snapshot.aws_sps__commands._driver_aws_cli_commands_recursive' and commit the transactions    
-# 6) copy the contents of the Excel workbook 'driver_aws_cli_commands-X-X-X.xlsx' tab 'commands_service_global' into the empty postgresql table 'aws_snapshot.aws_sps__commands._driver_aws_cli_commands_service_global' and commit the transactions
-# 7) copy the contents of the Excel workbook 'driver-aws-services-X-X-X.xlsx' tab 'driver_services' into the empty postgresql table 'aws_snapshot.aws_sps__commands._driver_aws_services' and commit the transactions
-# 8) create AWS CLI profiles with required AWS IAM permissions for each AWS account that you want to snapshot
-# 9) copy this script to the AWS EC2 instance running the PostgreSQL database
-# 10) execute this script: bash ./aws-services-snapshot.sh -p AWS_CLI_profile -r AWS_region
-# 11) download the summary report and JSON files from the EC2 instance if desired 
-# 12) use the PostgreSQL database tables as a snapshot resource as desired 
+# 3) edit or populate the Microsoft Excel file: 'driver_aws_cli_commands-X-X-X.xlsx' to set which services and AWS CLI commands are snapshotted
+# 4) copy the contents of the Excel workbook 'driver-aws-services-X-X-X.xlsx' tab 'aws_services' into the empty postgresql table 'aws_snapshot.aws_sps__commands._driver_aws_services' and commit the transactions
+# 5) copy the contents of the Excel workbook 'driver_aws_cli_commands-X-X-X.xlsx' tab 'aws_cli_commands' into the empty postgresql table 'aws_snapshot.aws_sps__commands._driver_aws_cli_commands' and commit the transactions
+# 6) copy the contents of the Excel workbook 'driver_aws_cli_commands-X-X-X.xlsx' tab 'aws_cli_commands_recursive' into the empty postgresql table 'aws_snapshot.aws_sps__commands._driver_aws_cli_commands_recursive' and commit the transactions    
+# 7) create AWS CLI profiles with required AWS IAM permissions for each AWS account that you want to snapshot
+# 8) copy this script to the AWS EC2 instance running the PostgreSQL database
+# 9) execute this script: bash ./aws-services-snapshot.sh -p AWS_CLI_profile -r AWS_region
+# 10) download the summary report and JSON files from the EC2 instance if desired 
+# 11) use the PostgreSQL database tables as a snapshot resource as desired 
 #
-#
+# Detailed instructions are here: https://github.com/Enterprise-Group-Ltd/aws-services-snapshot/blob/master/docs/postgresql-install.md
 #
 #
 ###############################################################################
-#
 #  
-# >>>> Begin Script <<<< 
+# >>>> end documentation <<<< 
 #
 ###############################################################################
 # 
+###############################################################################
+#  
+# >>>> begin initialize <<<< 
+#
+###############################################################################
 #
 # set the environmental variables 
 #
@@ -412,17 +444,19 @@ db_user="ec2-user"
 #
 echo "" > "$this_log_temp_file_full_path"
 #
+# 
+###############################################################################
+#  
+# >>>> end initialize <<<< 
 #
-##############################################################################################################33
-#                           Function definition begin
-##############################################################################################################33
+###############################################################################
 #
+# 
+###############################################################################
+#  
+# >>>> begin functionDefinition <<<< 
 #
-# Functions definitions
-#
-#######################################################################
-#
-#
+###############################################################################
 #
 #######################################################################
 #
@@ -10644,10 +10678,18 @@ function fnStrippedDriverFileCreate()
     #   
 }
 #
+# 
+###############################################################################
+#  
+# >>>> end functionDefinition <<<< 
 #
-##############################################################################################################33
-#                           Function definition end
-##############################################################################################################33
+###############################################################################
+#
+###############################################################################
+#  
+# >>>> begin setup <<<< 
+#
+###############################################################################
 #
 # 
 ###########################################################################################################################
@@ -12219,11 +12261,17 @@ if [[ "$execute_direct" != 'y' ]]
     #
 fi # end check of direct execute
 #
-##########################################################################
+###############################################################################
+#  
+# >>>> end setup <<<< 
 #
-#      *********************  begin execution *********************
+###############################################################################
 #
-##########################################################################
+###############################################################################
+#  
+# >>>> begin main <<<< 
+#
+###############################################################################
 #
 ##########################################################################
 #
@@ -13371,9 +13419,16 @@ exit 0
 #
 #
 #
+###############################################################################
+#  
+# >>>> end main <<<< 
+#
+###############################################################################
+#
+#
 ##########################################
 # 
-# end shell script 
+# end bash shell script 
 #
 ##########################################
 
