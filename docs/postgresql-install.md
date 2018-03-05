@@ -351,12 +351,22 @@ Save and exit the file:
 [esc]:wq
 ```
 
-## Create the AWS services and AWS CLI commands tables
+## Create and populate the AWS services and AWS CLI commands tables
 
-Using a local client or psql, connect as PostgreSQL role `ec2-user`
+Using a PostgreSQL client such as Navicat, connect to the database as PostgreSQL role `ec2-user`
 
 Execute the SQL script: [setup-aws-snapshot-db.sql](https://github.com/Enterprise-Group-Ltd/aws-services-snapshot/blob/master/setup-aws-snapshot-db.sql) 
 
+Copy the contents of the Excel workbook `driver_aws_cli_commands-X-X-X.xlsx` tab `aws_cli_commands` into the empty postgresql table `aws_snapshot.aws_sps__commands._driver_aws_cli_commands` and commit the transactions
+
+Copy the contents of the Excel workbook `driver_aws_cli_commands-X-X-X.xlsx` tab `aws_cli_commands_recursive` into the empty postgresql table `aws_snapshot.aws_sps__commands._driver_aws_cli_commands_recursive` and commit the transactions    
+
+Copy the contents of the Excel workbook `driver_aws_cli_commands-X-X-X.xlsx` tab `aws_services` into the empty postgresql table `aws_snapshot.aws_sps__commands._driver_aws_services` and commit the transactions
+
+## Setup is now complete
+
+## Selecting which AWS services and AWS CLI commands to snapshot
+To select which AWS services and AWS CLI commands to snapshot, edit the Excel workbook `driver_aws_cli_commands-X-X-X.xlsx` and copy the contents of the tabs into the database tables in schema: `aws_sps__commands`  
 
 
 ## Misc:
