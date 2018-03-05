@@ -5,7 +5,7 @@
 #
 # MIT License
 # 
-# Copyright (c) 2017 Enterprise Group, Ltd.
+# Copyright (c) 2018 Enterprise Group, Ltd.
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -29,12 +29,12 @@
 # 
 # File: aws-services-snapshot.sh
 #
-script_version=2.0.36  
+script_version=2.0.37  
 #
 #  Dependencies:
 #  - postgresql instance running on EC2; setup instructions here:
-#  - Microsoft Excel file: "$db_schema"._driver_aws_cli_commands.xlsx (this file is used to create the contents of the 
-#    postgresql tables '"$db_schema"._driver_aws_cli_commands' and '"$db_schema"._driver_aws_cli_commands_recursive' )  
+#  - Microsoft Excel file: driver_aws_cli_commands-X-X-X.xlsx (this file is used to create the contents of the 
+#    postgresql tables '_driver_aws_cli_commands' and '_driver_aws_cli_commands_recursive' )  
 #  - bash shell
 #  - jq - JSON wrangler https://stedolan.github.io/jq/
 #  - AWS CLI tools (pre-installed on AWS AMIs) 
@@ -43,7 +43,7 @@ script_version=2.0.36
 #    - aws sts get-caller-identity (used to pull account number )
 #    - aws iam list-account-aliases (used to pull account alias )
 #  - AWS CLI profile with IAM permissions for the AWS CLI 'service describe', 'service get', and 
-#    'service list' commands included in the postgresql tables '"$db_schema"._driver_aws_cli_commands' and '"$db_schema"._driver_aws_cli_commands_recursive'
+#    'service list' commands included in the postgresql tables '_driver_aws_cli_commands' and '_driver_aws_cli_commands_recursive'
 #
 #
 #  Sample IAM policy JSON for "sts:GetCallerIdentity"
@@ -115,8 +115,8 @@ script_version=2.0.36
 # 
 # The process to execute the utility is: 
 # 1) create an EC2 instance 
-# 2) install postgresql 9.6 (setup steps here: )
-# 3) populate the Microsoft Excel file: "$db_schema"._driver_aws_cli_commands.xlsx
+# 2) install postgresql 9.6 (setup steps here: https://github.com/Enterprise-Group-Ltd/aws-services-snapshot/blob/master/docs/postgresql-install.md )
+# 3) populate the Microsoft Excel file: 'driver_aws_cli_commands-X-X-X.xlsx'
 # 4) copy the contents of the Excel workbook 'driver_aws_cli_commands-X-X-X.xlsx' tab 'commands' into the empty postgresql table 'aws_snapshot.aws_sps__commands._driver_aws_cli_commands' and commit the transactions
 # 5) copy the contents of the Excel workbook 'driver_aws_cli_commands-X-X-X.xlsx' tab 'commands_recursive' into the empty postgresql table 'aws_snapshot.aws_sps__commands._driver_aws_cli_commands_recursive' and commit the transactions    
 # 6) copy the contents of the Excel workbook 'driver_aws_cli_commands-X-X-X.xlsx' tab 'commands_service_global' into the empty postgresql table 'aws_snapshot.aws_sps__commands._driver_aws_cli_commands_service_global' and commit the transactions
