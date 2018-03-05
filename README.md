@@ -35,7 +35,7 @@ This utility produces a summary report listing:
 
 ## Getting Started
 
-1. Follow the [PostgreSQL installation instructions](https://github.com/Enterprise-Group-Ltd/aws-services-snapshot/blob/master/docs/postgresql-install.md) 
+1. Follow the [AWS Services Snapshot EC2 instance create and configure instructions](https://github.com/Enterprise-Group-Ltd/aws-services-snapshot/blob/master/docs/postgresql-install.md) 
 2. Install or update the AWS CLI utilities
     * The AWS CLI utilities are pre-installed on AWS EC2 Linux instances
     * To update on an AWS EC2 instance: `$ sudo pip install --upgrade awscli` 
