@@ -38,7 +38,7 @@ The unique EC2 directory contains:
 * Summary report
 * Error report (if any)
 * Log (if set with -g parameter)
-* subdirectory `snapshot-files` containing the JSON results files for each AWS CLI command executed 
+* Subdirectory `snapshot-files` containing the JSON results files for each AWS CLI command executed 
 
 The unique PostreSQL schema contains:
 * AWS services and AWS CLI commands tables used in that run
