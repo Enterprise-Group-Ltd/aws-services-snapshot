@@ -1,0 +1,51 @@
+
+
+  ------------------------------------------------------------------------------------------
+  ------------------------------------------------------------------------------------------
+
+  AWS Services Snapshot Summary Report
+
+  Script Version: 1.3.22
+
+  Date: 2017-10-02-162827
+
+  AWS Account: 123456789012  egl-sample-act
+
+  AWS region: us-east-1
+
+  Driver file name: aws-services-snapshot-driver-dev-test-05.txt 
+
+
+  Number of regions snapshotted: 2 
+
+  Number of services snapshotted: 4 
+
+
+  AWS Services Snapshot JSON files location: 
+  /home/ec2-user/snapshot/aws-123456789012-us-east-1-snapshot-2017-10-02-162827/snapshot-files/ 
+
+
+  ------------------------------------------------------------------------------------------
+
+
+  Snapshots created for regions:
+  -----------------------------------------------------------------------
+     us-east-1
+     global
+
+
+  -----------------------------------------------------------------------
+
+
+  Snapshots created for services:
+  -----------------------------------------------------------------------
+     efs---file-systems
+     efs---mount-targets---fs-abcde123
+     iam---group-policies---test-policy
+     iam---groups
+
+
+  ------------------------------------------------------------------------------------------
+  ------------------------------------------------------------------------------------------
+
+
