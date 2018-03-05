@@ -5,14 +5,14 @@ This utility snapshots the current state of AWS Services
 
 This script will: 
 * Capture the current state of AWS Services 
-* Write the current state to JSON files  
+* Write the current state to JSON files and PostgreSQL tables  
 
 ---------------------------------------------------------------------------------------------------------------------
 
 Usage:
         aws-services-snapshot.sh -p AWS_CLI_profile 
 
-        Optional parameters: -d MyDriverFile -r AWS_region -b y -g y 
+        Optional parameters: -d MyDriverFile -r AWS_region -b y -g y -x y
 
 Where: 
  -p - Name of the AWS CLI cli_profile (i.e. what you would pass to the --profile parameter in an AWS CLI command)
@@ -33,6 +33,9 @@ Where:
  -g - Logging on / off. Default is off. Set to 'y' to create an info log. Set to 'z' to create a debug log. 
       Note: logging mode is slower and debug log mode will be very slow and resource intensive on large jobs. 
         Example: -g y 
+        
+ -x - Execute with no operator prompt on / off. Default is off. Set to 'y' to automate, schedule, etc.
+        Example: -x y
 
  -h - Display this message
         Example: -h 
