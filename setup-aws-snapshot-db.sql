@@ -2,7 +2,7 @@
 
 SQL setup script for AWS Services Snapshot utility
 
-v0.0.7
+v0.0.8
 
 This script sets up the PostgreSQL database 'aws_snapshot' for use by the 
 AWS Services Snapshot utility
@@ -107,7 +107,8 @@ CREATE TABLE aws_sps__commands._driver_aws_cli_commands_recursive(
 ,  command_recursive_comment TEXT
 ,  recursive_yn TEXT NOT NULL
 ,  execute_yn TEXT NOT NULL
-,  command_repeated TEXT NOT NULL
+,  recursive_multi_dependent_yn TEXT NOT NULL
+,  command_repeated_yn TEXT NOT NULL
 ,  command_recursive_table TEXT NOT NULL
 ,  parameter_source_table TEXT NOT NULL
 ,  parameter_source_attribute TEXT NOT NULL
