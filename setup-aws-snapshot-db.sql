@@ -48,6 +48,19 @@ CREATE SCHEMA IF NOT EXISTS aws_sps__commands
 
 /* create driver_aws_services table */
 
+DROP TABLE IF EXISTS aws_sps__commands._postgresql_reserved_words
+;
+
+CREATE TABLE aws_sps__commands._postgresql_reserved_words(
+  key_id SERIAL PRIMARY KEY
+, reserved_words TEXT NOT NULL 
+);
+
+
+
+
+/* create driver_aws_services table */
+
 DROP TABLE IF EXISTS aws_sps__commands._driver_aws_services
 ;
 
@@ -190,4 +203,3 @@ CREATE TABLE aws_sps__commands._driver_aws_cli_commands_recursive(
 ,  query_tail TEXT
 )
 ;
-
