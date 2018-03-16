@@ -57,7 +57,7 @@
 # File: aws-services-snapshot.sh
 # Source: https://github.com/Enterprise-Group-Ltd/aws-services-snapshot
 #
-script_version=2.1.36  
+script_version=2.1.37 
 #
 #  Dependencies:
 #  - postgresql instance running on EC2 (setup steps here: https://github.com/Enterprise-Group-Ltd/aws-services-snapshot/blob/master/docs/postgresql-install.md )
@@ -128,14 +128,31 @@ script_version=2.1.36
 #
 #
 # Roadmap:
-# - DB error check if table exists and is populated
-# - recursive error check for existing and populated source JSON & table
-# - multi-recursive
-# - single_dependent-recursive
-# - hardcoded parameter value
+# - rationalize function names
+#
+# - additional AWS command types:
+#     * recursive-multi
+#     * recursive-multi-dependent
+#     * hardcoded parameter value
+#
+# - test for table source JSON file > 1GB (too big for PostgreSQL JSONB load single field ) 
 # - summary report: add list of commands with no response values 
 # - auto-support --account-id qualifier
-# - service attribute "$" to tag services with fixed/regular costs, e.g. load balancers  
+# - service attribute "$" to tag services with fixed/regular costs, e.g. load balancers 
+#
+# - additional tested AWS services in command XLS
+#     * Route53
+#     * DynamoDB
+#     * SQS
+#     * SNS
+#     * EC2-VPC
+#     * EC2-autoscaling
+#     * EC2
+#     * Cloudwatch
+#     * RDS
+#     * Redshift
+#     * Glacier
+#     * AWS Glue
 # 
 #
 ##########################################################################################################
