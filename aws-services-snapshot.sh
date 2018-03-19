@@ -57,7 +57,7 @@
 # File: aws-services-snapshot.sh
 # Source: https://github.com/Enterprise-Group-Ltd/aws-services-snapshot
 #
-script_version=2.1.37 
+script_version=2.1.38 
 #
 #  Dependencies:
 #  - postgresql instance running on EC2 (setup steps here: https://github.com/Enterprise-Group-Ltd/aws-services-snapshot/blob/master/docs/postgresql-install.md )
@@ -128,8 +128,6 @@ script_version=2.1.37
 #
 #
 # Roadmap:
-# - rationalize function names
-#
 # - additional AWS command types:
 #     * recursive-multi
 #     * recursive-multi-dependent
@@ -194,7 +192,6 @@ script_version=2.1.37
 #
 # reference list of functions used in this script
 #
-# fnAwsCommandUnderscore()
 # fnAwsPullSnapshots()
 # fnAwsPullSnapshotsLoop()
 # fnAwsPullSnapshotsNonRecursive()
@@ -209,14 +206,13 @@ script_version=2.1.37
 # fnCommandNonRecursiveListBuild()
 # fnCommandRecursiveSingleDependentListBuild()
 # fnCommandRecursiveSingleListBuild()
+# fnCommandUnderscore()
 # fnCountDriverServices()
 # fnCounterIncrementAwsSnapshotCommands()
 # fnCounterIncrementRegions()
 # fnCounterIncrementSnapshots()
 # fnCounterIncrementTask()
 # fnCountGlobalServicesNames()
-# fnCreateMergedServicesAllJsonFile()
-# fnCreateMergedServicesJsonFile()
 # fnDbLoadSnapshotFile()
 # fnDbQueryCommandNonRecursiveList()
 # fnDbQueryCommandRecursiveSingleDependentList()
@@ -233,15 +229,15 @@ script_version=2.1.37
 # fnDbSchemaCreate()
 # fnDbSchemaDrop()
 # fnDbTableCreate()
-# fnDeleteWorkFiles()
 # fnDisplayHeader()
+# fnDisplayOutputConsole()
 # fnDisplayProgressBar()
 # fnDisplayProgressBarTask()
 # fnDisplayProgressBarTaskSub()
 # fnDisplayProgressBarTaskSubUpdate()
 # fnDisplayProgressBarTaskUpdate()
 # fnDisplayTaskSubText()
-# fnDuplicateRemoveSnapshottedServices()
+# fnDisplayVariableNamesCommand()
 # fnEcho()
 # fnErrorAws()
 # fnErrorJq()
@@ -250,28 +246,30 @@ script_version=2.1.37
 # fnErrorPsql()
 # fnFileAppendLog()
 # fnFileAppendLogTemp()
-# fnFileSnapshotUnneededDelete()
-# fnInitializeWriteFileBuild()
-# fnInitializeWriteFileBuildPattern()
-# fnLoadServiceSnapshotVariables()
-# fnLoadSnapshotNameVariable()
-# fnMergeArraysServicesJsonFile()
-# fnMergeArraysServicesRecursiveJsonFile()
-# fnOutputConsole()
-# fnOutputLog()
-# fnPatternLoad()
-# fnStrippedDriverFileCreate()
+# fnFileCreateMergedServicesAllJsonFile()
+# fnFileCreateMergedServicesJsonFile()
+# fnFileCreateStrippedDriverFile()
+# fnFileCreateWriteDirectory()
+# fnFileDeDuplicateSnapshottedServices()
+# fnFileDeleteSnapshotUnneeded()
+# fnFileDeleteWorkFiles()
+# fnFileInitializeWriteFileBuild()
+# fnFileInitializeWriteFileBuildPattern()
+# fnFileMergeArraysServicesJson()
+# fnFileMergeArraysServicesRecursiveJson()
+# fnFileWriteCommandFileRecursive()
 # fnUsage()
+# fnVariableAppendLog()
 # fnVariableLoadCommandFileSource()
-# fnVariableNamesCommandDisplay()
-# fnVariableNamesCommandLoad()
-# fnVariableNamesCommandRecursiveLoad()
-# fnVariablePriorLoad()
-# fnVariablePriorRestore()
-# fnVariablePriorSet()
-# fnWriteCommandFileRecursive()
-# fnWriteDirectoryCreate()
-# fnWriteFileVariablesSet()
+# fnVariableLoadCommandFromBackup()
+# fnVariableLoadCommandFromPrior()
+# fnVariableLoadCommandPriorFromCommand()
+# fnVariableLoadNamesCommand()
+# fnVariableLoadNamesCommandRecursive()
+# fnVariableLoadServiceSnapshot()
+# fnVariableLoadSnapshotName()
+# fnVariablePatternLoad()
+# fnVariableWriteFileSet()
 ###############################################################################
 #  
 # >>>> end documentation <<<< 
@@ -898,12 +896,12 @@ function fnEcho()
     # clear IFS parser
     IFS=
     # write the output to the console
-    fnOutputConsole "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8" "$9"
+    fnDisplayOutputConsole "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8" "$9"
     # if logging is enabled, then write to the log
     if [[ ("$logging" = "y") || ("$logging" = "z") || ("$logging" = "x")   ]] 
         then
             # write the output to the log
-            fnOutputLog "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8" "$9"
+            fnVariableAppendLog "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8" "$9"
     fi 
     # reset IFS parser to default values 
     unset IFS
@@ -914,7 +912,7 @@ function fnEcho()
 #
 # function to echo to the console  
 #
-function fnOutputConsole()
+function fnDisplayOutputConsole()
 {
    #
     # console output section
@@ -957,7 +955,7 @@ function fnOutputConsole()
 #
 # function to write to the log file 
 #
-function fnOutputLog()
+function fnVariableAppendLog()
 {
     # log output section
     #
@@ -1059,11 +1057,11 @@ function fnFileAppendLog()
 #
 # function to delete the work files 
 #
-function fnDeleteWorkFiles()
+function fnFileDeleteWorkFiles()
 {
     #
     fnEcho ${LINENO} ""
-    fnEcho ${LINENO} "in function: 'fnDeleteWorkFiles' "
+    fnEcho ${LINENO} "in function: 'fnFileDeleteWorkFiles' "
     fnEcho ${LINENO} ""
     #   
     fnEcho ${LINENO} level_0 ""
@@ -2154,11 +2152,11 @@ function fnDbQueryCommandRecursiveSingleList()
 	    fnEcho ${LINENO} ""  
 	    fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
 	    fnEcho ${LINENO} " creating AWS Command underscore version      "       
-	    fnEcho ${LINENO} " calling function 'fnAwsCommandUnderscore'      "               
+	    fnEcho ${LINENO} " calling function 'fnCommandUnderscore'      "               
 	    fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
 	    fnEcho ${LINENO} ""  
 	    #          
-	    fnAwsCommandUnderscore
+	    fnCommandUnderscore
 	    #
 	    ##########################################################################
 	    #
@@ -2168,11 +2166,11 @@ function fnDbQueryCommandRecursiveSingleList()
 	    fnEcho ${LINENO} ""  
 	    fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
 	    fnEcho ${LINENO} " setting the AWS snapshot name variable and creating underscore version      "       
-	    fnEcho ${LINENO} " calling function 'fnLoadSnapshotNameVariable'      "               
+	    fnEcho ${LINENO} " calling function 'fnVariableLoadSnapshotName'      "               
 	    fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
 	    fnEcho ${LINENO} ""  
 	    #          
-	    fnLoadSnapshotNameVariable
+	    fnVariableLoadSnapshotName
 	    #
 	    ##########################################################################
 	    #
@@ -2182,11 +2180,11 @@ function fnDbQueryCommandRecursiveSingleList()
 	    fnEcho ${LINENO} ""  
 	    fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
 	    fnEcho ${LINENO} " loading the service-snapshot variables      "       
-	    fnEcho ${LINENO} " calling function 'fnLoadServiceSnapshotVariables'      "               
+	    fnEcho ${LINENO} " calling function 'fnVariableLoadServiceSnapshot'      "               
 	    fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
 	    fnEcho ${LINENO} ""  
 	    #          
-	    fnLoadServiceSnapshotVariables
+	    fnVariableLoadServiceSnapshot
 	    #
 	    ##########################################################################
 	    #
@@ -3276,24 +3274,6 @@ function fnDbLoadSnapshotFile()
 		    #
 		    fnDisplayProgressBarTask "$counter_aws_region_list" "$count_aws_region_list"
 		    #
-		    # display the sub-task progress bar
-		    #
-		    fnDisplayProgressBarTaskSub "$counter_aws_snapshot_commands" "$count_aws_snapshot_commands"
-	        #
-	        ##########################################################################
-	        #
-	        #
-	        # display the subtask text      
-	        #
-	        fnEcho ${LINENO} ""  
-	        fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-	        fnEcho ${LINENO} " display the subtask text       "  
-	        fnEcho ${LINENO} " calling function 'fnDisplayTaskSubText'      "               
-	        fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-	        fnEcho ${LINENO} ""  
-	        #
-	        fnDisplayTaskSubText
-		    #
 		    ##########################################################################
 		    #
 		    #
@@ -3302,11 +3282,11 @@ function fnDbLoadSnapshotFile()
 		    fnEcho ${LINENO} ""  
 		    fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
 		    fnEcho ${LINENO} " display the AWS command variables       "       
-		    fnEcho ${LINENO} " calling function 'fnVariableNamesCommandDisplay'      "               
+		    fnEcho ${LINENO} " calling function 'fnDisplayVariableNamesCommand'      "               
 		    fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
 		    fnEcho ${LINENO} ""  
 		    #          
-			fnVariableNamesCommandDisplay
+			fnDisplayVariableNamesCommand
 			#
 		    fnEcho ${LINENO} ""  
 		    fnEcho ${LINENO} "value of variable 'aws_command_prior': "$aws_command_prior" " 
@@ -3575,6 +3555,24 @@ function fnDbLoadSnapshotFile()
             feed_write_log="$(sudo ls -l /pgdata/"$write_file_no_lf_file_name")"
             fnEcho ${LINENO} "$feed_write_log"
             fnEcho ${LINENO} ""
+			#
+		    ##########################################################################
+		    #
+		    #
+		    # display the header     
+		    #
+		    fnEcho ${LINENO} ""  
+		    fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
+		    fnEcho ${LINENO} " display the header      "  
+		    fnEcho ${LINENO} " calling function 'fnDisplayHeader'      "               
+		    fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
+		    fnEcho ${LINENO} ""  
+		    #          
+		    fnDisplayHeader
+		    #
+		    # display the task progress bar
+		    #
+		    fnDisplayProgressBarTask "$counter_aws_region_list" "$count_aws_region_list"          
 		    #
 		    ##########################################################################
 		    #
@@ -4802,24 +4800,6 @@ SQL
     #
     fnDisplayProgressBarTask "$counter_aws_region_list" "$count_aws_region_list"
     #
-    # display the sub-task progress bar
-    #
-    fnDisplayProgressBarTaskSub "$counter_aws_snapshot_commands" "$count_aws_snapshot_commands"
-    #
-    ##########################################################################
-    #
-    #
-    # display the subtask text      
-    #
-    fnEcho ${LINENO} ""  
-    fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " display the subtask text       "  
-    fnEcho ${LINENO} " calling function 'fnDisplayTaskSubText'      "               
-    fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} ""  
-    #
-    fnDisplayTaskSubText
-    #
     ##########################################################################
     #
     #
@@ -4849,23 +4829,23 @@ SQL
 #
 # function to load the pattern with the built-up service    
 #
-function fnPatternLoad()
+function fnVariablePatternLoad()
 {
     #
     ##########################################################################
     #
     #
-    # begin function 'fnPatternLoad'     
+    # begin function 'fnVariablePatternLoad'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " begin function 'fnPatternLoad'      "       
+    fnEcho ${LINENO} " begin function 'fnVariablePatternLoad'      "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #              
     #
     fnEcho ${LINENO} ""
-    fnEcho ${LINENO} "in function: 'fnPatternLoad' "
+    fnEcho ${LINENO} "in function: 'fnVariablePatternLoad' "
     fnEcho ${LINENO} ""
     #       
     #
@@ -4938,11 +4918,11 @@ function fnPatternLoad()
     ##########################################################################
     #
     #
-    # end function 'fnPatternLoad'     
+    # end function 'fnVariablePatternLoad'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " end function 'fnPatternLoad'      "       
+    fnEcho ${LINENO} " end function 'fnVariablePatternLoad'      "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #              
@@ -4953,23 +4933,23 @@ function fnPatternLoad()
 #
 # function to initialze the output file with the load pattern    
 #
-function fnInitializeWriteFileBuildPattern()
+function fnFileInitializeWriteFileBuildPattern()
 {
     #
     ##########################################################################
     #
     #
-    # begin function 'fnInitializeWriteFileBuildPattern'     
+    # begin function 'fnFileInitializeWriteFileBuildPattern'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " begin function 'fnInitializeWriteFileBuildPattern'      "       
+    fnEcho ${LINENO} " begin function 'fnFileInitializeWriteFileBuildPattern'      "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #              
     #
     fnEcho ${LINENO} ""
-    fnEcho ${LINENO} "in function: 'fnInitializeWriteFileBuildPattern' "
+    fnEcho ${LINENO} "in function: 'fnFileInitializeWriteFileBuildPattern' "
     fnEcho ${LINENO} ""
     #       
     #
@@ -5038,11 +5018,11 @@ function fnInitializeWriteFileBuildPattern()
     ##########################################################################
     #
     #
-    # end function 'fnInitializeWriteFileBuildPattern'     
+    # end function 'fnFileInitializeWriteFileBuildPattern'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " end function 'fnInitializeWriteFileBuildPattern'      "       
+    fnEcho ${LINENO} " end function 'fnFileInitializeWriteFileBuildPattern'      "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #              
@@ -5053,34 +5033,34 @@ function fnInitializeWriteFileBuildPattern()
 #
 # function to initialze the target region / service write file    
 #
-function fnInitializeWriteFileBuild()
+function fnFileInitializeWriteFileBuild()
 {
     #
     ##########################################################################
     #
     #
-    # begin function 'fnInitializeWriteFileBuild'     
+    # begin function 'fnFileInitializeWriteFileBuild'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " begin function 'fnInitializeWriteFileBuild'      "       
+    fnEcho ${LINENO} " begin function 'fnFileInitializeWriteFileBuild'      "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #                  
     #
     fnEcho ${LINENO} ""
-    fnEcho ${LINENO} "in function: 'fnInitializeWriteFileBuild' "
+    fnEcho ${LINENO} "in function: 'fnFileInitializeWriteFileBuild' "
     fnEcho ${LINENO} ""
     #       
     fnEcho ${LINENO} ""  
-    fnEcho ${LINENO} "in the function: 'fnInitializeWriteFileBuild' - initialize target data file for service writes  "  
+    fnEcho ${LINENO} "in the function: 'fnFileInitializeWriteFileBuild' - initialize target data file for service writes  "  
     fnEcho ${LINENO} "initializing the data file "   
     #
     file_target_initialize_region="$aws_region_list_line_parameter"
     file_target_initialize_file="$this_utility_acronym"-write-file-build.json
     #
     # calling function to initialize the output file 
-    fnInitializeWriteFileBuildPattern
+    fnFileInitializeWriteFileBuildPattern
     # 
 
     # feed_write_log="$(echo "{ \"account\": \"$aws_account\",\"regions\": [ { \"regionName\": \"$aws_region_list_line_parameter\",\"regionServices\": [ { \"serviceType\": \"$aws_service\",\"service\": [ ] } ] } ] }" > "$this_path_temp"/"$this_utility_acronym"-write-file-build.json  2>&1)"
@@ -5121,11 +5101,11 @@ function fnInitializeWriteFileBuild()
     ##########################################################################
     #
     #
-    # end function 'fnInitializeWriteFileBuild'     
+    # end function 'fnFileInitializeWriteFileBuild'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " end function 'fnInitializeWriteFileBuild'      "       
+    fnEcho ${LINENO} " end function 'fnFileInitializeWriteFileBuild'      "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #                      
@@ -5136,23 +5116,23 @@ function fnInitializeWriteFileBuild()
 #
 # function to append the recursive command service snapshot  
 #
-function fnWriteCommandFileRecursive()
+function fnFileWriteCommandFileRecursive()
 {
     #
     ##########################################################################
     #
     #
-    # begin function 'fnWriteCommandFileRecursive'     
+    # begin function 'fnFileWriteCommandFileRecursive'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " begin function 'fnWriteCommandFileRecursive'      "       
+    fnEcho ${LINENO} " begin function 'fnFileWriteCommandFileRecursive'      "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #                      
     #
     fnEcho ${LINENO} ""
-    fnEcho ${LINENO} "in function: 'fnWriteCommandFileRecursive' "
+    fnEcho ${LINENO} "in function: 'fnFileWriteCommandFileRecursive' "
     fnEcho ${LINENO} ""
     #        
     fnEcho ${LINENO} ""
@@ -5340,7 +5320,7 @@ function fnWriteCommandFileRecursive()
     fnEcho ${LINENO} ""  
     #   
     fnEcho ${LINENO} ""
-    fnEcho ${LINENO} "calling function: 'fnMergeArraysServicesRecursiveJsonFile' with parameters: "
+    fnEcho ${LINENO} "calling function: 'fnFileMergeArraysServicesRecursiveJson' with parameters: "
     fnEcho ${LINENO} "source:"
     fnEcho ${LINENO} ""$this_path_temp"/"$this_utility_acronym"-snapshot_recursive_source.json"
     fnEcho ${LINENO} ""      
@@ -5348,7 +5328,7 @@ function fnWriteCommandFileRecursive()
     fnEcho ${LINENO} ""$this_path_temp"/"$this_utility_acronym"-snapshot_recursive_target_build.json"
     fnEcho ${LINENO} ""
     #
-    fnMergeArraysServicesRecursiveJsonFile "$this_path_temp"/"$this_utility_acronym"-snapshot_recursive_source.json "$this_path_temp"/"$this_utility_acronym"-snapshot_recursive_target_build.json
+    fnFileMergeArraysServicesRecursiveJson "$this_path_temp"/"$this_utility_acronym"-snapshot_recursive_source.json "$this_path_temp"/"$this_utility_acronym"-snapshot_recursive_target_build.json
     #
     #    
     #
@@ -5481,11 +5461,11 @@ function fnWriteCommandFileRecursive()
     ##########################################################################
     #
     #
-    # end function 'fnWriteCommandFileRecursive'     
+    # end function 'fnFileWriteCommandFileRecursive'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " end function 'fnWriteCommandFileRecursive'      "       
+    fnEcho ${LINENO} " end function 'fnFileWriteCommandFileRecursive'      "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #                      
@@ -5947,23 +5927,23 @@ function fnCounterIncrementRegions()
 #
 #  function to remove duplicates from the services snapshotted file 
 #
-function fnDuplicateRemoveSnapshottedServices()
+function fnFileDeDuplicateSnapshottedServices()
 {
     #
     ##########################################################################
     #
     #
-    # begin function 'fnDuplicateRemoveSnapshottedServices'     
+    # begin function 'fnFileDeDuplicateSnapshottedServices'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " begin function 'fnDuplicateRemoveSnapshottedServices'      "       
+    fnEcho ${LINENO} " begin function 'fnFileDeDuplicateSnapshottedServices'      "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #                              
     #
     fnEcho ${LINENO} ""
-    fnEcho ${LINENO} "in function: 'fnDuplicateRemoveSnapshottedServices' "
+    fnEcho ${LINENO} "in function: 'fnFileDeDuplicateSnapshottedServices' "
     fnEcho ${LINENO} ""
     fnEcho ${LINENO} ""
     fnEcho ${LINENO} "value of variable 'write_file_service_names': "
@@ -6015,11 +5995,11 @@ function fnDuplicateRemoveSnapshottedServices()
     ##########################################################################
     #
     #
-    # end function 'fnDuplicateRemoveSnapshottedServices'     
+    # end function 'fnFileDeDuplicateSnapshottedServices'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " end function 'fnDuplicateRemoveSnapshottedServices'      "       
+    fnEcho ${LINENO} " end function 'fnFileDeDuplicateSnapshottedServices'      "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #                              
@@ -6944,26 +6924,26 @@ function fnAwsPullSnapshotsLoop()
 	    fnEcho ${LINENO} ""  
 	    fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
 	    fnEcho ${LINENO} " display the AWS command variables       "       
-	    fnEcho ${LINENO} " calling function 'fnVariableNamesCommandDisplay'      "               
+	    fnEcho ${LINENO} " calling function 'fnDisplayVariableNamesCommand'      "               
 	    fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
 	    fnEcho ${LINENO} ""  
 	    #          
-		fnVariableNamesCommandDisplay
+		fnDisplayVariableNamesCommand
 		#        
 	    ##########################################################################
 	    #
 	    #
 	    # load AWS command-related variables 
-	    # calling function'fnVariableNamesCommandLoad'     
+	    # calling function'fnVariableLoadNamesCommand'     
 	    #
 	    fnEcho ${LINENO} ""  
 	    fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
 	    fnEcho ${LINENO} " load variable names     "  
-	    fnEcho ${LINENO} " calling function 'fnVariableNamesCommandLoad'      "               
+	    fnEcho ${LINENO} " calling function 'fnVariableLoadNamesCommand'      "               
 	    fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
 	    fnEcho ${LINENO} ""  
 	    #          
-	    fnVariableNamesCommandLoad
+	    fnVariableLoadNamesCommand
         #
         ##########################################################################
         #
@@ -7068,16 +7048,16 @@ function fnAwsPullSnapshotsLoop()
         #
         #
         # load AWS command-related variables 
-        # calling function'fnVariableNamesCommandLoad'     
+        # calling function'fnVariableLoadNamesCommand'     
         #
         fnEcho ${LINENO} ""  
         fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
         fnEcho ${LINENO} " load variable names     "  
-        fnEcho ${LINENO} " calling function 'fnVariableNamesCommandLoad'      "               
+        fnEcho ${LINENO} " calling function 'fnVariableLoadNamesCommand'      "               
         fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
         fnEcho ${LINENO} ""  
         #          
-        fnVariableNamesCommandLoad
+        fnVariableLoadNamesCommand
 	    #
 	    ##########################################################################
 	    #
@@ -7204,16 +7184,16 @@ function fnAwsPullSnapshotsLoop()
         #
         #
         # set the write file variables 
-        # calling function: fnWriteFileVariablesSet     
+        # calling function: fnVariableWriteFileSet     
         #
         fnEcho ${LINENO} ""  
         fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
         fnEcho ${LINENO} " set the write file variables       "  
-        fnEcho ${LINENO} " calling function: fnWriteFileVariablesSet         "  
+        fnEcho ${LINENO} " calling function: fnVariableWriteFileSet         "  
         fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
         fnEcho ${LINENO} ""  
         #
-		fnWriteFileVariablesSet  
+		fnVariableWriteFileSet  
 		#
         ##########################################################################
         #
@@ -7429,15 +7409,15 @@ function fnAwsPullSnapshotsLoop()
         ##########################################################################
         #
         #
-        # calling function 'fnPatternLoad'       
+        # calling function 'fnVariablePatternLoad'       
         #
         fnEcho ${LINENO} ""  
         fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-        fnEcho ${LINENO} " calling function 'fnPatternLoad'     "       
+        fnEcho ${LINENO} " calling function 'fnVariablePatternLoad'     "       
         fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
         fnEcho ${LINENO} ""  
         #
-        fnPatternLoad
+        fnVariablePatternLoad
         #
         #
         ##########################################################################
@@ -7533,23 +7513,23 @@ function fnAwsPullSnapshotsLoop()
         ##########################################################################
         #
         #
-        # calling the array merge function 'fnMergeArraysServicesJsonFile' 
+        # calling the array merge function 'fnFileMergeArraysServicesJson' 
         # parameters are: source target 
         # output file name of the function is: "$this_utility_acronym"-merge-services-file-build-temp.json
         #
-        # calling function: 'fnMergeArraysServicesJsonFile' with parameters: "$this_utility_acronym"-write-file-services-load.json "$this_utility_acronym"-write-file-build.json 
+        # calling function: 'fnFileMergeArraysServicesJson' with parameters: "$this_utility_acronym"-write-file-services-load.json "$this_utility_acronym"-write-file-build.json 
         #
         fnEcho ${LINENO} ""  
         fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-        fnEcho ${LINENO} " calling the array merge function 'fnMergeArraysServicesJsonFile'     "       
+        fnEcho ${LINENO} " calling the array merge function 'fnFileMergeArraysServicesJson'     "       
         fnEcho ${LINENO} " parameters are: source target      "       
         fnEcho ${LINENO} " output file name of the function is: "$this_utility_acronym"-merge-services-file-build-temp.json     "      
         fnEcho ${LINENO} "" 
-        fnEcho ${LINENO} " calling function: 'fnMergeArraysServicesJsonFile' with parameters: "$this_utility_acronym"-write-file-services-load.json "$this_utility_acronym"-write-file-build.json      "       
+        fnEcho ${LINENO} " calling function: 'fnFileMergeArraysServicesJson' with parameters: "$this_utility_acronym"-write-file-services-load.json "$this_utility_acronym"-write-file-build.json      "       
         fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
         fnEcho ${LINENO} ""  
         #
-        fnMergeArraysServicesJsonFile "$this_path_temp"/"$this_utility_acronym"-write-file-services-load.json "$this_path_temp"/"$this_utility_acronym"-write-file-build.json
+        fnFileMergeArraysServicesJson "$this_path_temp"/"$this_utility_acronym"-write-file-services-load.json "$this_path_temp"/"$this_utility_acronym"-write-file-build.json
         #
         #    
         #
@@ -8117,11 +8097,11 @@ function fnAwsPullSnapshotsRecursiveLoop()
 	    fnEcho ${LINENO} ""  
 	    fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
 	    fnEcho ${LINENO} " display the AWS command variables       "       
-	    fnEcho ${LINENO} " calling function 'fnVariableNamesCommandDisplay'      "               
+	    fnEcho ${LINENO} " calling function 'fnDisplayVariableNamesCommand'      "               
 	    fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
 	    fnEcho ${LINENO} ""  
 	    #          
-		fnVariableNamesCommandDisplay
+		fnDisplayVariableNamesCommand
         #
         ##########################################################################
         #
@@ -8131,11 +8111,11 @@ function fnAwsPullSnapshotsRecursiveLoop()
         fnEcho ${LINENO} ""  
         fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
         fnEcho ${LINENO} " check for recursive run type and load the AWS recursive command       "  
-        fnEcho ${LINENO} " calling function 'fnVariableNamesCommandRecursiveLoad'      "               
+        fnEcho ${LINENO} " calling function 'fnVariableLoadNamesCommandRecursive'      "               
         fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
         fnEcho ${LINENO} ""  
         #          
-		fnVariableNamesCommandRecursiveLoad
+		fnVariableLoadNamesCommandRecursive
         #
         # debug
         #
@@ -8222,16 +8202,16 @@ function fnAwsPullSnapshotsRecursiveLoop()
         #
         #
         # load AWS command-related variables 
-        # calling function'fnVariableNamesCommandLoad'     
+        # calling function'fnVariableLoadNamesCommand'     
         #
         fnEcho ${LINENO} ""  
         fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
         fnEcho ${LINENO} " load variable names     "  
-        fnEcho ${LINENO} " calling function 'fnVariableNamesCommandLoad'      "               
+        fnEcho ${LINENO} " calling function 'fnVariableLoadNamesCommand'      "               
         fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
         fnEcho ${LINENO} ""  
         #          
-        fnVariableNamesCommandLoad
+        fnVariableLoadNamesCommand
         #
         ##########################################################################
         #
@@ -8241,11 +8221,11 @@ function fnAwsPullSnapshotsRecursiveLoop()
         fnEcho ${LINENO} ""  
         fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
         fnEcho ${LINENO} " check for recursive run type and load the AWS recursive command       "  
-        fnEcho ${LINENO} " calling function 'fnVariableNamesCommandRecursiveLoad'      "               
+        fnEcho ${LINENO} " calling function 'fnVariableLoadNamesCommandRecursive'      "               
         fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
         fnEcho ${LINENO} ""  
         #          
-		fnVariableNamesCommandRecursiveLoad
+		fnVariableLoadNamesCommandRecursive
         #
         ##########################################################################
         #
@@ -8309,31 +8289,31 @@ function fnAwsPullSnapshotsRecursiveLoop()
 		        #
 		        #
 		        # Loading the AWS command variables with prior values
-		        # calling function: 'fnVariablePriorLoad'   
+		        # calling function: 'fnVariableLoadCommandFromPrior'   
 		        #			    
 			    fnEcho ${LINENO} ""  
 			    fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
 			    fnEcho ${LINENO} "Loading the variables with prior values " 
-			    fnEcho ${LINENO} "calling function: 'fnVariablePriorLoad' "        
+			    fnEcho ${LINENO} "calling function: 'fnVariableLoadCommandFromPrior' "        
 			    fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
 			    fnEcho ${LINENO} ""  
 			    #                  
-				fnVariablePriorLoad
+				fnVariableLoadCommandFromPrior
 				#
 		        ##########################################################################
 		        #
 		        #
 		        # load AWS command-related variables 
-		        # calling function'fnVariableNamesCommandLoad'     
+		        # calling function'fnVariableLoadNamesCommand'     
 		        #
 		        fnEcho ${LINENO} ""  
 		        fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
 		        fnEcho ${LINENO} " load variable names     "  
-		        fnEcho ${LINENO} " calling function 'fnVariableNamesCommandLoad'      "               
+		        fnEcho ${LINENO} " calling function 'fnVariableLoadNamesCommand'      "               
 		        fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
 		        fnEcho ${LINENO} ""  
 		        #          
-		        fnVariableNamesCommandLoad
+		        fnVariableLoadNamesCommand
 		        #
 		        ##########################################################################
 		        #
@@ -8343,11 +8323,11 @@ function fnAwsPullSnapshotsRecursiveLoop()
 		        fnEcho ${LINENO} ""  
 		        fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
 		        fnEcho ${LINENO} " check for recursive run type and load the AWS recursive command       "  
-		        fnEcho ${LINENO} " calling function 'fnVariableNamesCommandRecursiveLoad'      "               
+		        fnEcho ${LINENO} " calling function 'fnVariableLoadNamesCommandRecursive'      "               
 		        fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
 		        fnEcho ${LINENO} ""  
 		        #          
-				fnVariableNamesCommandRecursiveLoad
+				fnVariableLoadNamesCommandRecursive
 				#
 		        ##########################################################################
 		        #
@@ -8368,31 +8348,31 @@ function fnAwsPullSnapshotsRecursiveLoop()
 		        #
 		        #
 		        # Restoring the AWS command variables with backup values
-		        # calling function: 'fnVariablePriorRestore'    
+		        # calling function: 'fnVariableLoadCommandFromBackup'    
 		        #			    
 			    fnEcho ${LINENO} ""  
 			    fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
 			    fnEcho ${LINENO} "Restoring the variables with backup values " 
-			    fnEcho ${LINENO} "calling function: 'fnVariablePriorRestore' "        
+			    fnEcho ${LINENO} "calling function: 'fnVariableLoadCommandFromBackup' "        
 			    fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
 			    fnEcho ${LINENO} ""  
 			    #                  
-				fnVariablePriorRestore
+				fnVariableLoadCommandFromBackup
 				#
 		        ##########################################################################
 		        #
 		        #
 		        # load AWS command-related variable names 
-		        # calling function'fnVariableNamesCommandLoad'     
+		        # calling function'fnVariableLoadNamesCommand'     
 		        #
 		        fnEcho ${LINENO} ""  
 		        fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
 		        fnEcho ${LINENO} " load variable names     "  
-		        fnEcho ${LINENO} " calling function 'fnVariableNamesCommandLoad'      "               
+		        fnEcho ${LINENO} " calling function 'fnVariableLoadNamesCommand'      "               
 		        fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
 		        fnEcho ${LINENO} ""  
 		        #          
-		        fnVariableNamesCommandLoad	
+		        fnVariableLoadNamesCommand	
 		        #
 		        ##########################################################################
 		        #
@@ -8402,11 +8382,11 @@ function fnAwsPullSnapshotsRecursiveLoop()
 		        fnEcho ${LINENO} ""  
 		        fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
 		        fnEcho ${LINENO} " check for recursive run type and load the AWS recursive command       "  
-		        fnEcho ${LINENO} " calling function 'fnVariableNamesCommandRecursiveLoad'      "               
+		        fnEcho ${LINENO} " calling function 'fnVariableLoadNamesCommandRecursive'      "               
 		        fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
 		        fnEcho ${LINENO} ""  
 		        #          
-				fnVariableNamesCommandRecursiveLoad	        		
+				fnVariableLoadNamesCommandRecursive	        		
 		        #
 		        ##########################################################################
 		        #
@@ -8441,16 +8421,16 @@ function fnAwsPullSnapshotsRecursiveLoop()
 		        #
 		        #
 		        # set the write file variables 
-		        # calling function: fnWriteFileVariablesSet     
+		        # calling function: fnVariableWriteFileSet     
 		        #
 		        fnEcho ${LINENO} ""  
 		        fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
 		        fnEcho ${LINENO} " set the write file variables       "  
-		        fnEcho ${LINENO} " calling function: fnWriteFileVariablesSet         "  
+		        fnEcho ${LINENO} " calling function: fnVariableWriteFileSet         "  
 		        fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
 		        fnEcho ${LINENO} ""  
 		        #
-				fnWriteFileVariablesSet  
+				fnVariableWriteFileSet  
 				#
                 ##########################################################################
                 #
@@ -9146,15 +9126,15 @@ function fnAwsPullSnapshotsRecursiveLoop()
         ##########################################################################
         #
         #
-        # calling function 'fnPatternLoad'
+        # calling function 'fnVariablePatternLoad'
         #
         fnEcho ${LINENO} ""  
         fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-        fnEcho ${LINENO} " calling function 'fnPatternLoad'     "
+        fnEcho ${LINENO} " calling function 'fnVariablePatternLoad'     "
         fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
         fnEcho ${LINENO} ""  
         #                  
-        fnPatternLoad
+        fnVariablePatternLoad
         #
         # the built-up AWS service is put into the following structure as an array at the position of the '.'  
         # service_snapshot_build_03="$(echo "$service_snapshot_build_02" \
@@ -9408,15 +9388,15 @@ function fnAwsPullSnapshotsRecursiveLoop()
             ##########################################################################
             #
             #
-            # calling the write file initialize function: 'fnInitializeWriteFileBuild'
+            # calling the write file initialize function: 'fnFileInitializeWriteFileBuild'
             #
             fnEcho ${LINENO} ""  
             fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-            fnEcho ${LINENO} "calling the write file initialize function: 'fnInitializeWriteFileBuild' "
+            fnEcho ${LINENO} "calling the write file initialize function: 'fnFileInitializeWriteFileBuild' "
             fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
             fnEcho ${LINENO} ""  
             #                  
-            fnInitializeWriteFileBuild
+            fnFileInitializeWriteFileBuild
             #
             fnEcho ${LINENO} ""
             #
@@ -9501,15 +9481,15 @@ function fnAwsPullSnapshotsRecursiveLoop()
         ##########################################################################
         #
         #
-        # calling the recursive command file write function 'fnWriteCommandFileRecursive' "
+        # calling the recursive command file write function 'fnFileWriteCommandFileRecursive' "
         #
         fnEcho ${LINENO} ""  
         fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-        fnEcho ${LINENO} "calling the recursive command file write function 'fnWriteCommandFileRecursive' "
+        fnEcho ${LINENO} "calling the recursive command file write function 'fnFileWriteCommandFileRecursive' "
         fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
         fnEcho ${LINENO} ""  
         #                  
-        fnWriteCommandFileRecursive
+        fnFileWriteCommandFileRecursive
         #
         #  
         fnEcho ${LINENO} ""
@@ -9752,30 +9732,30 @@ function fnAwsPullSnapshotsRecursiveLoop()
         ##########################################################################
         #
         #
-        # calling the recursive command file write function: 'fnWriteCommandFileRecursive'
+        # calling the recursive command file write function: 'fnFileWriteCommandFileRecursive'
         #
         fnEcho ${LINENO} ""  
         fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-        fnEcho ${LINENO} "calling the recursive command file write function: 'fnWriteCommandFileRecursive' "
+        fnEcho ${LINENO} "calling the recursive command file write function: 'fnFileWriteCommandFileRecursive' "
         fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
         fnEcho ${LINENO} ""  
         #                  
-        fnWriteCommandFileRecursive
+        fnFileWriteCommandFileRecursive
         #
         ##########################################################################
         #
         #
         # set the write file variables 
-        # calling function: fnWriteFileVariablesSet     
+        # calling function: fnVariableWriteFileSet     
         #
         fnEcho ${LINENO} ""  
         fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
         fnEcho ${LINENO} " set the write file variables       "  
-        fnEcho ${LINENO} " calling function: fnWriteFileVariablesSet         "  
+        fnEcho ${LINENO} " calling function: fnVariableWriteFileSet         "  
         fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
         fnEcho ${LINENO} ""  
         #
-		fnWriteFileVariablesSet  
+		fnVariableWriteFileSet  
         #
         ##########################################################################
         #
@@ -10045,11 +10025,11 @@ function fnAwsPullSnapshotsRecursiveLoop()
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} "Loading the AWS command variables with prior values " 
-    fnEcho ${LINENO} "calling function: 'fnVariablePriorLoad' "        
+    fnEcho ${LINENO} "calling function: 'fnVariableLoadCommandFromPrior' "        
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #                  
-	fnVariablePriorLoad
+	fnVariableLoadCommandFromPrior
 	#
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
@@ -10063,11 +10043,11 @@ function fnAwsPullSnapshotsRecursiveLoop()
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} "Restoring the AWS command variables with backup values " 
-    fnEcho ${LINENO} "calling function: 'fnVariablePriorRestore' "        
+    fnEcho ${LINENO} "calling function: 'fnVariableLoadCommandFromBackup' "        
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #                  
-	fnVariablePriorRestore
+	fnVariableLoadCommandFromBackup
     #
     ##########################################################################
     #
@@ -10077,11 +10057,11 @@ function fnAwsPullSnapshotsRecursiveLoop()
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} " check for recursive run type and load the AWS recursive command       "  
-    fnEcho ${LINENO} " calling function 'fnVariableNamesCommandRecursiveLoad'      "               
+    fnEcho ${LINENO} " calling function 'fnVariableLoadNamesCommandRecursive'      "               
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #          
-	fnVariableNamesCommandRecursiveLoad
+	fnVariableLoadNamesCommandRecursive
     #
     ##########################################################################
     #
@@ -10143,11 +10123,11 @@ function fnAwsPullSnapshotsRecursiveHardcoded()
 #
 # function to merge recursive services arrays in two JSON files 
 #
-function fnMergeArraysServicesRecursiveJsonFile()
+function fnFileMergeArraysServicesRecursiveJson()
 {
     #
     fnEcho ${LINENO} ""
-    fnEcho ${LINENO} "in function: 'fnMergeArraysServicesRecursiveJsonFile' "
+    fnEcho ${LINENO} "in function: 'fnFileMergeArraysServicesRecursiveJson' "
     fnEcho ${LINENO} ""
     #        
     # set the source file
@@ -10432,11 +10412,11 @@ function fnMergeArraysServicesRecursiveJsonFile()
 #
 # function to merge services arrays in two JSON files 
 #
-function fnMergeArraysServicesJsonFile()
+function fnFileMergeArraysServicesJson()
 {
     #
     fnEcho ${LINENO} ""
-    fnEcho ${LINENO} "in function: 'fnMergeArraysServicesJsonFile' "
+    fnEcho ${LINENO} "in function: 'fnFileMergeArraysServicesJson' "
     fnEcho ${LINENO} ""
     #        
     # set the source file
@@ -10653,11 +10633,11 @@ function fnMergeArraysServicesJsonFile()
 #
 # function to create the merged services JSON file 
 #
-function fnCreateMergedServicesJsonFile()
+function fnFileCreateMergedServicesJsonFile()
 {
     #
     fnEcho ${LINENO} ""
-    fnEcho ${LINENO} "in function: 'fnCreateMergedServicesJsonFile' "
+    fnEcho ${LINENO} "in function: 'fnFileCreateMergedServicesJsonFile' "
     fnEcho ${LINENO} ""
     #       
     #
@@ -11034,7 +11014,7 @@ function fnCreateMergedServicesJsonFile()
                     file_target_initialize_file="$this_utility_acronym"-merge-services-file-build.json
                     #
                     # calling function to initialize the output file 
-                    fnInitializeWriteFileBuildPattern
+                    fnFileInitializeWriteFileBuildPattern
                     # 
                     # feed_write_log="$(echo "{ \"account\": \"$aws_account\",\"regions\": [ { \"regionName\": \"$aws_region_fn_create_merged_services_json_file\",\"regionServices\": [ { \"serviceType\": \"$aws_service\",\"service\": [ ] } ] } ] }" > "$this_path_temp"/"$this_utility_acronym"-merge-services-file-build.json  2>&1)"
                     #
@@ -11107,7 +11087,7 @@ function fnCreateMergedServicesJsonFile()
             # call the array merge function  
             # parameters are: source target 
             # output file name of the function is: "$this_utility_acronym"-merge-services-file-build-temp.json
-            fnMergeArraysServicesJsonFile "$files_snapshots_source_merge" "$files_snapshots_target"
+            fnFileMergeArraysServicesJson "$files_snapshots_source_merge" "$files_snapshots_target"
             #
             #
             fnEcho ${LINENO} ""
@@ -11306,11 +11286,11 @@ function fnCreateMergedServicesJsonFile()
 #
 # ---begin: function to create the merged 'all services' JSON file for all regions in the account
 #
-function fnCreateMergedServicesAllJsonFile()
+function fnFileCreateMergedServicesAllJsonFile()
 {
     #
     fnEcho ${LINENO} ""
-    fnEcho ${LINENO} "in function: 'fnCreateMergedServicesAllJsonFile' "
+    fnEcho ${LINENO} "in function: 'fnFileCreateMergedServicesAllJsonFile' "
     fnEcho ${LINENO} ""
     #       
     #
@@ -11485,7 +11465,7 @@ function fnCreateMergedServicesAllJsonFile()
     fnEcho ${LINENO} ""
     #
     fnEcho ${LINENO} ""  
-    # this initialization string also used to create the snapshot build target file via function fnInitializeWriteFileBuild
+    # this initialization string also used to create the snapshot build target file via function fnFileInitializeWriteFileBuild
     fnEcho ${LINENO} "in the section: 'create merged 'all services - all regions' JSON file' "  
     fnEcho ${LINENO} "initializing the 'all services - all regions' merge services data file "
     #
@@ -11493,7 +11473,7 @@ function fnCreateMergedServicesAllJsonFile()
     file_target_initialize_file="$this_utility_acronym"-merge-services-all-file-build.json
     #
     # calling function to initialize the output file 
-    fnInitializeWriteFileBuildPattern
+    fnFileInitializeWriteFileBuildPattern
     # 
     # feed_write_log="$(echo "{ \"account\": \"$aws_account\",\"regions\": [ { \"regionName\": \"$aws_region_fn_create_merged_services_json_file\",\"regionServices\": [ { \"serviceType\": \"$aws_service\",\"service\": [ ] } ] } ] }" > "$this_path_temp"/"$this_utility_acronym"-merge-services-all-file-build.json  2>&1)"
     #
@@ -11615,7 +11595,7 @@ function fnCreateMergedServicesAllJsonFile()
             # call the array merge function  
             # parameters are: source target 
             # output file name of the function is: "$this_utility_acronym"-merge-services-file-build-temp.json
-            fnMergeArraysServicesJsonFile "$files_snapshots_all_source_merge" "$files_snapshots_all_target"
+            fnFileMergeArraysServicesJson "$files_snapshots_all_source_merge" "$files_snapshots_all_target"
             #
             #
             fnEcho ${LINENO} ""
@@ -11838,7 +11818,7 @@ function fnCountDriverServices()
             fnEcho ${LINENO} level_0 "--------------------------------------------------------------------------------------------------"
             fnEcho ${LINENO} level_0 ""
             # delete the work files
-            # fnDeleteWorkFiles
+            # fnFileDeleteWorkFiles
             # append the temp log onto the log file
             fnFileAppendLogTemp
             # write the log variable to the log file
@@ -11870,22 +11850,22 @@ function fnCountDriverServices()
 #
 # afunction to create aws_command_underscore
 #
-function fnAwsCommandUnderscore()
+function fnCommandUnderscore()
 {
     #
     ##########################################################################
     #
     #
-    # begin function 'fnAwsCommandUnderscore'     
+    # begin function 'fnCommandUnderscore'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " begin function 'fnAwsCommandUnderscore'      "       
+    fnEcho ${LINENO} " begin function 'fnCommandUnderscore'      "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #       
     fnEcho ${LINENO} ""
-    fnEcho ${LINENO} "in function: 'fnAwsCommandUnderscore' "
+    fnEcho ${LINENO} "in function: 'fnCommandUnderscore' "
     fnEcho ${LINENO} ""
     #       
     #
@@ -11914,11 +11894,11 @@ function fnAwsCommandUnderscore()
     ##########################################################################
     #
     #
-    # end function 'fnAwsCommandUnderscore'     
+    # end function 'fnCommandUnderscore'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " end function 'fnAwsCommandUnderscore'      "       
+    fnEcho ${LINENO} " end function 'fnCommandUnderscore'      "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #   
@@ -12022,22 +12002,22 @@ function fnCountGlobalServicesNames()
 #
 # function to set the snapshot name variable: 'aws_snapshot_name' and create underscore version
 #
-function fnLoadSnapshotNameVariable()
+function fnVariableLoadSnapshotName()
 {
     #
     ##########################################################################
     #
     #
-    # begin function 'fnLoadSnapshotNameVariable'     
+    # begin function 'fnVariableLoadSnapshotName'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " begin function 'fnLoadSnapshotNameVariable'      "       
+    fnEcho ${LINENO} " begin function 'fnVariableLoadSnapshotName'      "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #       
     fnEcho ${LINENO} ""
-    fnEcho ${LINENO} "in function: 'fnLoadSnapshotNameVariable' "
+    fnEcho ${LINENO} "in function: 'fnVariableLoadSnapshotName' "
     fnEcho ${LINENO} ""
     #       
     #
@@ -12097,11 +12077,11 @@ function fnLoadSnapshotNameVariable()
     ##########################################################################
     #
     #
-    # end function 'fnLoadSnapshotNameVariable'     
+    # end function 'fnVariableLoadSnapshotName'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " end function 'fnLoadSnapshotNameVariable'      "       
+    fnEcho ${LINENO} " end function 'fnVariableLoadSnapshotName'      "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #   
@@ -12112,22 +12092,22 @@ function fnLoadSnapshotNameVariable()
 #
 # function to load the service-snapshot variables
 #
-function fnLoadServiceSnapshotVariables()
+function fnVariableLoadServiceSnapshot()
 {
     #
     ##########################################################################
     #
     #
-    # begin function 'fnLoadServiceSnapshotVariables'     
+    # begin function 'fnVariableLoadServiceSnapshot'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " begin function 'fnLoadServiceSnapshotVariables'      "       
+    fnEcho ${LINENO} " begin function 'fnVariableLoadServiceSnapshot'      "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #       
     fnEcho ${LINENO} ""
-    fnEcho ${LINENO} "in function: 'fnLoadServiceSnapshotVariables' "
+    fnEcho ${LINENO} "in function: 'fnVariableLoadServiceSnapshot' "
     fnEcho ${LINENO} ""
     #       
     #
@@ -12316,11 +12296,11 @@ function fnLoadServiceSnapshotVariables()
     ##########################################################################
     #
     #
-    # end function 'fnLoadServiceSnapshotVariables'     
+    # end function 'fnVariableLoadServiceSnapshot'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " end function 'fnLoadServiceSnapshotVariables'      "       
+    fnEcho ${LINENO} " end function 'fnVariableLoadServiceSnapshot'      "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #   
@@ -12332,22 +12312,22 @@ function fnLoadServiceSnapshotVariables()
 # function to create the stripped driver file 
 # prior to call, set the variables 'file_snapshot_driver_file_name' and 'file_snapshot_driver_stripped_file_name' 
 #
-function fnStrippedDriverFileCreate()
+function fnFileCreateStrippedDriverFile()
 {
     #
     ##########################################################################
     #
     #
-    # begin function 'fnStrippedDriverFileCreate'     
+    # begin function 'fnFileCreateStrippedDriverFile'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " begin function 'fnStrippedDriverFileCreate'      "       
+    fnEcho ${LINENO} " begin function 'fnFileCreateStrippedDriverFile'      "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #       
     fnEcho ${LINENO} ""
-    fnEcho ${LINENO} "in function: 'fnStrippedDriverFileCreate' "
+    fnEcho ${LINENO} "in function: 'fnFileCreateStrippedDriverFile' "
     fnEcho ${LINENO} ""
     #       
     #
@@ -12435,11 +12415,11 @@ function fnStrippedDriverFileCreate()
     ##########################################################################
     #
     #
-    # end function 'fnStrippedDriverFileCreate'     
+    # end function 'fnFileCreateStrippedDriverFile'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " end function 'fnStrippedDriverFileCreate'      "       
+    fnEcho ${LINENO} " end function 'fnFileCreateStrippedDriverFile'      "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #   
@@ -12466,7 +12446,7 @@ function fnAwsPullSnapshotsRecursiveLoopTail()
     fnEcho ${LINENO} ""  
     #   
     fnEcho ${LINENO} ""
-    fnEcho ${LINENO} "in function: 'fnStrippedDriverFileCreate' "
+    fnEcho ${LINENO} "in function: 'fnFileCreateStrippedDriverFile' "
     fnEcho ${LINENO} ""
     #       
     #
@@ -12590,16 +12570,16 @@ function fnAwsPullSnapshotsRecursiveLoopTail()
     #
     #
     # set the AWS command prior variables
-    # calling function: 'fnVariablePriorSet'
+    # calling function: 'fnVariableLoadCommandPriorFromCommand'
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} "set the prior variables   "  
-    fnEcho ${LINENO} "calling function: 'fnVariablePriorSet' "         
+    fnEcho ${LINENO} "calling function: 'fnVariableLoadCommandPriorFromCommand' "         
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #
-	fnVariablePriorSet 
+	fnVariableLoadCommandPriorFromCommand 
     #
     ##########################################################################
     #
@@ -12665,22 +12645,22 @@ function fnAwsPullSnapshotsRecursiveLoopTail()
 # function to create the stripped driver file 
 # prior to call, set the variables 'file_snapshot_driver_file_name' and 'file_snapshot_driver_stripped_file_name' 
 #
-function fnWriteFileVariablesSet()
+function fnVariableWriteFileSet()
 {
     #
     ##########################################################################
     #
     #
-    # begin function 'fnWriteFileVariablesSet'     
+    # begin function 'fnVariableWriteFileSet'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " begin function 'fnWriteFileVariablesSet      "       
+    fnEcho ${LINENO} " begin function 'fnVariableWriteFileSet      "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #   
     fnEcho ${LINENO} ""
-    fnEcho ${LINENO} "in function: 'fnWriteFileVariablesSet' "
+    fnEcho ${LINENO} "in function: 'fnVariableWriteFileSet' "
     fnEcho ${LINENO} ""
     #       
     #
@@ -12728,24 +12708,24 @@ function fnWriteFileVariablesSet()
     ##########################################################################
     #
     #
-    # calling function 'fnInitializeWriteFileBuild'    
+    # calling function 'fnFileInitializeWriteFileBuild'    
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " calling function 'fnInitializeWriteFileBuild'      "
+    fnEcho ${LINENO} " calling function 'fnFileInitializeWriteFileBuild'      "
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #                  
-    fnInitializeWriteFileBuild
+    fnFileInitializeWriteFileBuild
     #
     ##########################################################################
     #
     #
-    # end function 'fnWriteFileVariablesSet'     
+    # end function 'fnVariableWriteFileSet'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " end function 'fnWriteFileVariablesSet'      "       
+    fnEcho ${LINENO} " end function 'fnVariableWriteFileSet'      "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #   
@@ -12756,22 +12736,22 @@ function fnWriteFileVariablesSet()
 #
 # function to load the variables with prior values
 #
-function fnVariablePriorSet()
+function fnVariableLoadCommandPriorFromCommand()
 {
     #
     ##########################################################################
     #
     #
-    # begin function 'fnVariablePriorSet'     
+    # begin function 'fnVariableLoadCommandPriorFromCommand'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " begin function 'fnVariablePriorSet     "       
+    fnEcho ${LINENO} " begin function 'fnVariableLoadCommandPriorFromCommand     "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #   
     fnEcho ${LINENO} ""
-    fnEcho ${LINENO} "in function: 'fnVariablePriorSet' "
+    fnEcho ${LINENO} "in function: 'fnVariableLoadCommandPriorFromCommand' "
     fnEcho ${LINENO} ""
     #
     # load prior from variables 
@@ -12822,11 +12802,11 @@ function fnVariablePriorSet()
     ##########################################################################
     #
     #
-    # end function 'fnVariablePriorSet'     
+    # end function 'fnVariableLoadCommandPriorFromCommand'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " end function 'fnVariablePriorSet'      "       
+    fnEcho ${LINENO} " end function 'fnVariableLoadCommandPriorFromCommand'      "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #   
@@ -12837,22 +12817,22 @@ function fnVariablePriorSet()
 #
 # function to load the variables with prior values
 #
-function fnVariablePriorLoad()
+function fnVariableLoadCommandFromPrior()
 {
     #
     ##########################################################################
     #
     #
-    # begin function 'fnVariablePriorLoad'     
+    # begin function 'fnVariableLoadCommandFromPrior'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " begin function 'fnVariablePriorLoad     "       
+    fnEcho ${LINENO} " begin function 'fnVariableLoadCommandFromPrior     "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #   
     fnEcho ${LINENO} ""
-    fnEcho ${LINENO} "in function: 'fnVariablePriorLoad' "
+    fnEcho ${LINENO} "in function: 'fnVariableLoadCommandFromPrior' "
     fnEcho ${LINENO} ""
     #       
     fnEcho ${LINENO} ""  
@@ -12913,11 +12893,11 @@ function fnVariablePriorLoad()
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} " display the AWS command variables       "       
-    fnEcho ${LINENO} " calling function 'fnVariableNamesCommandDisplay'      "               
+    fnEcho ${LINENO} " calling function 'fnDisplayVariableNamesCommand'      "               
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #          
-	fnVariableNamesCommandDisplay
+	fnDisplayVariableNamesCommand
     #
     # load backups from variables 
 	aws_service_backup="$aws_service"
@@ -12990,20 +12970,20 @@ function fnVariablePriorLoad()
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} " display the AWS command variables       "       
-    fnEcho ${LINENO} " calling function 'fnVariableNamesCommandDisplay'      "               
+    fnEcho ${LINENO} " calling function 'fnDisplayVariableNamesCommand'      "               
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #          
-	fnVariableNamesCommandDisplay
+	fnDisplayVariableNamesCommand
     #
     ##########################################################################
     #
     #
-    # end function 'fnVariablePriorLoad'     
+    # end function 'fnVariableLoadCommandFromPrior'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " end function 'fnVariablePriorLoad'      "       
+    fnEcho ${LINENO} " end function 'fnVariableLoadCommandFromPrior'      "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #   
@@ -13014,22 +12994,22 @@ function fnVariablePriorLoad()
 #
 # function to restore the variables with backup values
 #
-function fnVariablePriorRestore()
+function fnVariableLoadCommandFromBackup()
 {
     #
     ##########################################################################
     #
     #
-    # begin function 'fnVariablePriorRestore'     
+    # begin function 'fnVariableLoadCommandFromBackup'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " begin function 'fnVariablePriorRestore'     "       
+    fnEcho ${LINENO} " begin function 'fnVariableLoadCommandFromBackup'     "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #   
     fnEcho ${LINENO} ""
-    fnEcho ${LINENO} "in function: 'fnVariablePriorRestore' "
+    fnEcho ${LINENO} "in function: 'fnVariableLoadCommandFromBackup' "
     fnEcho ${LINENO} ""
     #       
     fnEcho ${LINENO} ""  
@@ -13051,11 +13031,11 @@ function fnVariablePriorRestore()
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} " display the AWS command variables       "       
-    fnEcho ${LINENO} " calling function 'fnVariableNamesCommandDisplay'      "               
+    fnEcho ${LINENO} " calling function 'fnDisplayVariableNamesCommand'      "               
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #          
-	fnVariableNamesCommandDisplay
+	fnDisplayVariableNamesCommand
     #
     # restore variables from backup
 	aws_service="$aws_service_backup"
@@ -13089,20 +13069,20 @@ function fnVariablePriorRestore()
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} " display the AWS command variables       "       
-    fnEcho ${LINENO} " calling function 'fnVariableNamesCommandDisplay'      "               
+    fnEcho ${LINENO} " calling function 'fnDisplayVariableNamesCommand'      "               
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #          
-	fnVariableNamesCommandDisplay
+	fnDisplayVariableNamesCommand
     #
     ##########################################################################
     #
     #
-    # end function 'fnVariablePriorRestore'     
+    # end function 'fnVariableLoadCommandFromBackup'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " end function 'fnVariablePriorRestore'      "       
+    fnEcho ${LINENO} " end function 'fnVariableLoadCommandFromBackup'      "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #   
@@ -13113,22 +13093,22 @@ function fnVariablePriorRestore()
 #
 # function to load the AWS command-related variable names
 #
-function fnVariableNamesCommandLoad()
+function fnVariableLoadNamesCommand()
 {
     #
     ##########################################################################
     #
     #
-    # begin function 'fnVariableNamesCommandLoad'     
+    # begin function 'fnVariableLoadNamesCommand'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " begin function 'fnVariableNamesCommandLoad'     "       
+    fnEcho ${LINENO} " begin function 'fnVariableLoadNamesCommand'     "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #   
     fnEcho ${LINENO} ""
-    fnEcho ${LINENO} "in function: 'fnVariableNamesCommandLoad' "
+    fnEcho ${LINENO} "in function: 'fnVariableLoadNamesCommand' "
     fnEcho ${LINENO} ""
     #       
     #
@@ -13140,11 +13120,11 @@ function fnVariableNamesCommandLoad()
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} " creating AWS Command underscore version      "       
-    fnEcho ${LINENO} " calling function 'fnAwsCommandUnderscore'      "               
+    fnEcho ${LINENO} " calling function 'fnCommandUnderscore'      "               
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #          
-    fnAwsCommandUnderscore
+    fnCommandUnderscore
     #
     ##########################################################################
     #
@@ -13154,11 +13134,11 @@ function fnVariableNamesCommandLoad()
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} " setting the AWS snapshot name variable and creating underscore version      "       
-    fnEcho ${LINENO} " calling function 'fnLoadSnapshotNameVariable'      "               
+    fnEcho ${LINENO} " calling function 'fnVariableLoadSnapshotName'      "               
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #          
-    fnLoadSnapshotNameVariable
+    fnVariableLoadSnapshotName
     #
     ##########################################################################
     #
@@ -13168,20 +13148,20 @@ function fnVariableNamesCommandLoad()
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} " loading the service-snapshot variables      "       
-    fnEcho ${LINENO} " calling function 'fnLoadServiceSnapshotVariables'      "               
+    fnEcho ${LINENO} " calling function 'fnVariableLoadServiceSnapshot'      "               
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #          
-    fnLoadServiceSnapshotVariables
+    fnVariableLoadServiceSnapshot
     #
     ##########################################################################
     #
     #
-    # end function 'fnVariableNamesCommandLoad'     
+    # end function 'fnVariableLoadNamesCommand'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " end function 'fnVariableNamesCommandLoad'      "       
+    fnEcho ${LINENO} " end function 'fnVariableLoadNamesCommand'      "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #   
@@ -13192,22 +13172,22 @@ function fnVariableNamesCommandLoad()
 #
 # function to load the AWS recursive-command-related variable names
 #
-function fnVariableNamesCommandRecursiveLoad()
+function fnVariableLoadNamesCommandRecursive()
 {
     #
     ##########################################################################
     #
     #
-    # begin function 'fnVariableNamesCommandRecursiveLoad'     
+    # begin function 'fnVariableLoadNamesCommandRecursive'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " begin function 'fnVariableNamesCommandRecursiveLoad'     "       
+    fnEcho ${LINENO} " begin function 'fnVariableLoadNamesCommandRecursive'     "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #   
     fnEcho ${LINENO} ""
-    fnEcho ${LINENO} "in function: 'fnVariableNamesCommandRecursiveLoad' "
+    fnEcho ${LINENO} "in function: 'fnVariableLoadNamesCommandRecursive' "
     fnEcho ${LINENO} ""
     #       
     # check for recursive run type
@@ -13264,20 +13244,20 @@ function fnVariableNamesCommandRecursiveLoad()
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} " display the AWS command variables       "       
-    fnEcho ${LINENO} " calling function 'fnVariableNamesCommandDisplay'      "               
+    fnEcho ${LINENO} " calling function 'fnDisplayVariableNamesCommand'      "               
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #          
-	fnVariableNamesCommandDisplay
+	fnDisplayVariableNamesCommand
     #
     ##########################################################################
     #
     #
-    # end function 'fnVariableNamesCommandRecursiveLoad'     
+    # end function 'fnVariableLoadNamesCommandRecursive'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " end function 'fnVariableNamesCommandRecursiveLoad'      "       
+    fnEcho ${LINENO} " end function 'fnVariableLoadNamesCommandRecursive'      "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #   
@@ -13288,22 +13268,22 @@ function fnVariableNamesCommandRecursiveLoad()
 #
 # function to load the AWS recursive-command-related variable names
 #
-function fnVariableNamesCommandDisplay()
+function fnDisplayVariableNamesCommand()
 {
     #
     ##########################################################################
     #
     #
-    # begin function 'fnVariableNamesCommandRecursiveLoad'     
+    # begin function 'fnVariableLoadNamesCommandRecursive'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " begin function 'fnVariableNamesCommandDisplay'     "       
+    fnEcho ${LINENO} " begin function 'fnDisplayVariableNamesCommand'     "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #   
     fnEcho ${LINENO} ""
-    fnEcho ${LINENO} "in function: 'fnVariableNamesCommandDisplay' "
+    fnEcho ${LINENO} "in function: 'fnDisplayVariableNamesCommand' "
     fnEcho ${LINENO} ""
     #    
     fnEcho ${LINENO} ""
@@ -13330,11 +13310,11 @@ function fnVariableNamesCommandDisplay()
     ##########################################################################
     #
     #
-    # end function 'fnVariableNamesCommandDisplay'     
+    # end function 'fnDisplayVariableNamesCommand'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " end function 'fnVariableNamesCommandDisplay'      "       
+    fnEcho ${LINENO} " end function 'fnDisplayVariableNamesCommand'      "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #   
@@ -13351,7 +13331,7 @@ function fnCommandListBuild()
     ##########################################################################
     #
     #
-    # begin function 'fnVariableNamesCommandRecursiveLoad'     
+    # begin function 'fnVariableLoadNamesCommandRecursive'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
@@ -14763,7 +14743,7 @@ function fnCommandCount()
     ##########################################################################
     #
     #
-    # begin function 'fnVariableNamesCommandRecursiveLoad'     
+    # begin function 'fnVariableLoadNamesCommandRecursive'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
@@ -14847,7 +14827,7 @@ function fnCommandNonRecursiveListBuild()
     ##########################################################################
     #
     #
-    # begin function 'fnVariableNamesCommandRecursiveLoad'     
+    # begin function 'fnVariableLoadNamesCommandRecursive'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
@@ -15006,7 +14986,7 @@ function fnCommandRecursiveSingleListBuild()
     ##########################################################################
     #
     #
-    # begin function 'fnVariableNamesCommandRecursiveLoad'     
+    # begin function 'fnVariableLoadNamesCommandRecursive'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
@@ -15318,22 +15298,22 @@ function fnCommandRecursiveSingleDependentListBuild()
 #
 # function to create the write directories 
 #
-function fnWriteDirectoryCreate()
+function fnFileCreateWriteDirectory()
 {
     #
     ##########################################################################
     #
     #
-    # begin function 'fnVariableNamesCommandRecursiveLoad'     
+    # begin function 'fnVariableLoadNamesCommandRecursive'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " begin function 'fnWriteDirectoryCreate'     "       
+    fnEcho ${LINENO} " begin function 'fnFileCreateWriteDirectory'     "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #   
     fnEcho ${LINENO} ""
-    fnEcho ${LINENO} "in function: 'fnWriteDirectoryCreate' "
+    fnEcho ${LINENO} "in function: 'fnFileCreateWriteDirectory' "
     fnEcho ${LINENO} ""
     #    
     #
@@ -15569,11 +15549,11 @@ function fnWriteDirectoryCreate()
     ##########################################################################
     #
     #
-    # end function 'fnWriteDirectoryCreate'     
+    # end function 'fnFileCreateWriteDirectory'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " end function 'fnWriteDirectoryCreate'      "       
+    fnEcho ${LINENO} " end function 'fnFileCreateWriteDirectory'      "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #   
@@ -15584,22 +15564,22 @@ function fnWriteDirectoryCreate()
 #
 # function to delete unneeded snapshots created for the recursive source run 
 #
-function fnFileSnapshotUnneededDelete()
+function fnFileDeleteSnapshotUnneeded()
 {
     #
     ##########################################################################
     #
     #
-    # begin function 'fnVariableNamesCommandRecursiveLoad'     
+    # begin function 'fnVariableLoadNamesCommandRecursive'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " begin function 'fnFileSnapshotUnneededDelete'     "       
+    fnEcho ${LINENO} " begin function 'fnFileDeleteSnapshotUnneeded'     "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #   
     fnEcho ${LINENO} ""
-    fnEcho ${LINENO} "in function: 'fnFileSnapshotUnneededDelete' "
+    fnEcho ${LINENO} "in function: 'fnFileDeleteSnapshotUnneeded' "
     fnEcho ${LINENO} ""
     #    
     #
@@ -15861,11 +15841,11 @@ function fnFileSnapshotUnneededDelete()
     ##########################################################################
     #
     #
-    # end function 'fnFileSnapshotUnneededDelete'     
+    # end function 'fnFileDeleteSnapshotUnneeded'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
-    fnEcho ${LINENO} " end function 'fnFileSnapshotUnneededDelete'      "       
+    fnEcho ${LINENO} " end function 'fnFileDeleteSnapshotUnneeded'      "       
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #   
@@ -15884,7 +15864,7 @@ function fnVariableLoadCommandFileSource()
     ##########################################################################
     #
     #
-    # begin function 'fnVariableNamesCommandRecursiveLoad'     
+    # begin function 'fnVariableLoadNamesCommandRecursive'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
@@ -15955,12 +15935,12 @@ function fnVariableLoadCommandFileSource()
 	#
 	# create the stripped driver file
 	# prior to call, set the variables 'file_snapshot_driver_file_name' and 'file_snapshot_driver_stripped_file_name' 
-	# calling function: 'fnStrippedDriverFileCreate'    
+	# calling function: 'fnFileCreateStrippedDriverFile'    
 	#
 	fnEcho ${LINENO} ""  
 	fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
 	fnEcho ${LINENO} " create the stripped driver file   "
-	fnEcho ${LINENO} " calling function: 'fnStrippedDriverFileCreate'  "   
+	fnEcho ${LINENO} " calling function: 'fnFileCreateStrippedDriverFile'  "   
 	fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
 	fnEcho ${LINENO} ""  
 	#
@@ -15972,7 +15952,7 @@ function fnVariableLoadCommandFileSource()
 	fnEcho ${LINENO} "value of variable 'file_snapshot_driver_stripped_file_name': "$file_snapshot_driver_stripped_file_name" "
 	fnEcho ${LINENO} ""
 	#
-	fnStrippedDriverFileCreate
+	fnFileCreateStrippedDriverFile
     #
     ##########################################################################
     #
@@ -15998,7 +15978,7 @@ function fnDbQueryCommandRecursiveSourceTables()
     ##########################################################################
     #
     #
-    # begin function 'fnVariableNamesCommandRecursiveLoad'     
+    # begin function 'fnVariableLoadNamesCommandRecursive'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
@@ -16059,12 +16039,12 @@ function fnDbQueryCommandRecursiveSourceTables()
 	#
 	#
 	# create the write directory
-	# calling function: 'fnWriteDirectoryCreate' 
+	# calling function: 'fnFileCreateWriteDirectory' 
 	#
 	fnEcho ${LINENO} ""  
 	fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
 	fnEcho ${LINENO} " create the write directory   "
-	fnEcho ${LINENO} " setting variables and calling function: 'fnWriteDirectoryCreate'   "
+	fnEcho ${LINENO} " setting variables and calling function: 'fnFileCreateWriteDirectory'   "
 	fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
 	fnEcho ${LINENO} ""  
 	#
@@ -16079,7 +16059,7 @@ function fnDbQueryCommandRecursiveSourceTables()
 	fnEcho ${LINENO} "value of variable 'aws_region': "$aws_region" "
 	fnEcho ${LINENO} ""
 	#
-	fnWriteDirectoryCreate
+	fnFileCreateWriteDirectory
 	#
 	#
 	##########################################################################
@@ -16172,7 +16152,7 @@ function fnDbQueryTestTableExists()
     ##########################################################################
     #
     #
-    # begin function 'fnVariableNamesCommandRecursiveLoad'     
+    # begin function 'fnVariableLoadNamesCommandRecursive'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
@@ -16342,7 +16322,7 @@ function fnDbQueryTestTablePopulate()
     ##########################################################################
     #
     #
-    # begin function 'fnVariableNamesCommandRecursiveLoad'     
+    # begin function 'fnVariableLoadNamesCommandRecursive'     
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
@@ -18345,7 +18325,7 @@ if [[ "$execute_direct" != 'y' ]]
                     # drop the database schema
                     fnDbSchemaDrop
                     # delete the work files
-                    fnDeleteWorkFiles
+                    fnFileDeleteWorkFiles
                     # append the temp log onto the log file
                     fnFileAppendLogTemp
                     # write the log variable to the log file
@@ -18917,16 +18897,16 @@ do
     #
     #
     # create the write directory
-    # calling function: 'fnWriteDirectoryCreate' 
+    # calling function: 'fnFileCreateWriteDirectory' 
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} " create the write directory   "
-    fnEcho ${LINENO} " calling function: 'fnWriteDirectoryCreate'   "
+    fnEcho ${LINENO} " calling function: 'fnFileCreateWriteDirectory'   "
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #
-	fnWriteDirectoryCreate
+	fnFileCreateWriteDirectory
     #
     #
     ##########################################################################
@@ -19028,31 +19008,31 @@ do
     #
     #
     # remove the unneeded snapshot JSON files created for the recursive source run
-    # calling function: fnFileSnapshotUnneededDelete
+    # calling function: fnFileDeleteSnapshotUnneeded
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} " remove any duplicates from the list of snapshotted services  "
-    fnEcho ${LINENO} " calling function: fnFileSnapshotUnneededDelete "   
+    fnEcho ${LINENO} " calling function: fnFileDeleteSnapshotUnneeded "   
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #                          
-	fnFileSnapshotUnneededDelete
+	fnFileDeleteSnapshotUnneeded
     #
     ##########################################################################
     #
     #
     # remove any duplicates from the list of snapshotted services
-    # calling function: fnDuplicateRemoveSnapshottedServices for region: "$aws_region_list_line" "
+    # calling function: fnFileDeDuplicateSnapshottedServices for region: "$aws_region_list_line" "
     #
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} " remove any duplicates from the list of snapshotted services  "
-    fnEcho ${LINENO} " calling function: fnDuplicateRemoveSnapshottedServices for region: "$aws_region_list_line" "   
+    fnEcho ${LINENO} " calling function: fnFileDeDuplicateSnapshottedServices for region: "$aws_region_list_line" "   
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #                          
-    fnDuplicateRemoveSnapshottedServices "$aws_region_list_line"
+    fnFileDeDuplicateSnapshottedServices "$aws_region_list_line"
     #
     #
     #
@@ -19104,15 +19084,15 @@ do
     fnEcho ${LINENO} ""  
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} " create the merged all services JSON file for the region: "$aws_region_list_line"    "
-    fnEcho ${LINENO} "calling function: 'fnCreateMergedServicesJsonFile' "
+    fnEcho ${LINENO} "calling function: 'fnFileCreateMergedServicesJsonFile' "
     fnEcho ${LINENO} "---------------------------------------------------------------------------------------------------------"  
     fnEcho ${LINENO} ""  
     #
     fnEcho ${LINENO} ""
-    fnEcho ${LINENO} "calling function: fnCreateMergedServicesJsonFile for region: "$aws_region_list_line" "
+    fnEcho ${LINENO} "calling function: fnFileCreateMergedServicesJsonFile for region: "$aws_region_list_line" "
     fnEcho ${LINENO} ""
     #
-    fnCreateMergedServicesJsonFile "$aws_region_list_line" "$find_name"
+    fnFileCreateMergedServicesJsonFile "$aws_region_list_line" "$find_name"
     #
     ##########################################################################
     #
@@ -19283,10 +19263,10 @@ if [[ "$aws_region" = 'all' ]]
         fnEcho ${LINENO} ""  
         #
         fnEcho ${LINENO} ""
-        fnEcho ${LINENO} "calling function: fnCreateMergedServicesJsonFile for account: "$aws_account" "
+        fnEcho ${LINENO} "calling function: fnFileCreateMergedServicesJsonFile for account: "$aws_account" "
         fnEcho ${LINENO} ""
         #
-        fnCreateMergedServicesAllJsonFile 'all' "$find_name"
+        fnFileCreateMergedServicesAllJsonFile 'all' "$find_name"
         #
         #
 fi  # end check for all regions
@@ -19529,7 +19509,7 @@ fnEcho ${LINENO} ""
 fnDisplayHeader
 #
 #
-fnDeleteWorkFiles
+fnFileDeleteWorkFiles
 #
 fnEcho ${LINENO} ""  
 #
